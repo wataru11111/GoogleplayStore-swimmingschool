@@ -1,3 +1,15 @@
 // Place all the styles related to the admin/homes controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
+
+// top.html.erb に適用
+.homes-top form {
+    min-height: calc(20vh - 50px);
+    margin-bottom: 2rem;
+}
+
+// index.html.erb に適用
+.offs-index form {
+    min-height: calc(20vh - 50px);
+    margin-bottom: 2rem;
+}

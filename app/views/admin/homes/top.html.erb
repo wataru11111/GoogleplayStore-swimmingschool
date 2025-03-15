@@ -1,7 +1,6 @@
 <div class="container">
   <h1>振替一覧</h1>
-
-  <!-- 振替検索フォーム -->
+<!-- 振替検索フォーム -->
   <%= form_with url: admin_path, method: :get, local: true do %>
     <div class="form-group">
       <%= label_tag :search_date, "日付を選択" %>
@@ -10,9 +9,12 @@
     <%= submit_tag "検索", class: "btn btn-primary" %>
   <% end %>
 
-  <!-- 検索結果 -->
+
+<!-- 検索結果 -->
   <% if params[:search_date].present? %>
     <h3><%= params[:search_date] %> の振替人数: <%= @dates.size %></h3>
+  <% else %>
+    <h3>全ての振替情報を表示中 (人数: <%= @dates.size %>)</h3>
   <% end %>
 
   <!-- 振替情報 -->
@@ -32,11 +34,16 @@
         <tr>
           <td><%= date.transfer_date %></td>
           <td><%= date.child.last_name %> <%= date.child.first_name %></td>
-          <td><%= date.off.off_month %></td>
+          <td><%= date.off&.off_month || 'データなし' %></td>
           <td><%= date.transfer_time %></td>
           <td><%= date.level %></td>
         </tr>
       <% end %>
     </tbody>
   </table>
+
+
+  
+
+
 </div>

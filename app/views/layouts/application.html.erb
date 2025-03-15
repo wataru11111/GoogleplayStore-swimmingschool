@@ -94,10 +94,11 @@
     </nav>
   </header>
 
-  <body class="<%= current_page?(root_path) ? 'top-page-background' : 'custom-background' %>">
+  <body class="<%= current_page?(root_path) ? 'top-page-background' : 'custom-background' %> <%= controller_name %>-<%= action_name %>">
     <main>
       <%= yield %>
     </main>
+
 
     <footer>
       <div class="container mt-5">

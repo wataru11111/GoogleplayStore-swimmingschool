@@ -1,8 +1,6 @@
 <div class="container">
-
   <h1>お休み一覧</h1>
-
-  <!-- 検索フォーム -->
+<!-- 検索フォーム -->
   <%= form_with url: admin_offs_path, method: :get, local: true do %>
     <div class="form-group">
       <%= label_tag :search_date, "日付を選択" %>
@@ -11,11 +9,13 @@
     <%= submit_tag "検索", class: "btn btn-primary" %>
   <% end %>
 
-  <!-- 検索結果 -->
+
+  <!-- 検索結果を上に移動 -->
   <% if params[:search_date].present? %>
     <h3><%= params[:search_date] %> のお休み人数: <%= @offs.size %></h3>
   <% end %>
 
+<!-- テーブル -->
   <table class="table">
     <thead>
       <tr>
@@ -38,4 +38,5 @@
       <% end %>
     </tbody>
   </table>
+
 </div>
