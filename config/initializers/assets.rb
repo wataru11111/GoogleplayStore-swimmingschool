@@ -12,3 +12,7 @@ Rails.application.config.assets.paths << Rails.root.join('node_modules')
 # application.js, application.css, and all non-JS/CSS in the app/assets
 # folder are already added.
 # Rails.application.config.assets.precompile += %w( admin.js admin.css )
+
+# PWA用のアイコン画像をプリコンパイル
+Rails.application.config.assets.precompile += %w[icon-192x192.png icon-512x512.png manifest.json]
+
