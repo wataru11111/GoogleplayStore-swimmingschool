@@ -6,7 +6,8 @@ ruby '3.1.6'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.1.7', '>= 6.1.7.3'
 # Use sqlite3 as the database for Active Record
-gem 'sqlite3', '~> 1.4'
+# SQLite → 開発＆テストのみ
+gem 'sqlite3', '~> 1.4', group: [:development, :test]
 # Use Puma as the app server
 gem 'puma', '~> 3.11'
 # Use SCSS for stylesheets
@@ -63,6 +64,8 @@ gem 'kaminari','~> 1.2.1'
 gem "enum_help"
 
 gem 'dotenv-rails'
+
+# MySQL → 本番のみ
 group :production do
   gem 'mysql2', '~> 0.5.5'
 end

@@ -1,6 +1,12 @@
-const { environment } = require('@rails/webpacker')
+// config/webpack/environment.js
+const { environment } = require('@rails/webpacker');
+const webpack = require('webpack');
 
-// ↓ 不要な node 設定を削除または修正
-environment.config.set('node', false);
+environment.plugins.append('Provide', new webpack.ProvidePlugin({
+  $: 'jquery',
+  jQuery: 'jquery',
+  Popper: ['popper.js', 'default']
+}));
 
-module.exports = environment
+module.exports = environment;
+

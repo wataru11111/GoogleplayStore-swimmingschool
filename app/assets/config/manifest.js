@@ -1,3 +1,7 @@
+//= link_tree ../images
+//= link_directory ../stylesheets .css
+//= link 2月3月スケジュール表.png
+
 {
   "name": "Swimming School",
   "short_name": "SwimSchool",
@@ -18,4 +22,3 @@
     }
   ]
 }
-
