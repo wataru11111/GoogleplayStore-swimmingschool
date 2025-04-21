@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "~> 3.3.0" # ✅ Vercelが要求する形式に修正
+ruby " 3.3.0" # ✅ Vercelが要求する形式に修正
 
 # --- Rails & DB関連 ---
 gem 'rails', '~> 6.1.7', '>= 6.1.7.3'
