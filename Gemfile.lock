@@ -278,7 +278,7 @@ DEPENDENCIES
   kaminari (~> 1.2.1)
   listen (~> 3.3)
   logger
-  mysql2 (~> 0.5.5)
+  mysql2 (~> 0.5.4)
   net-imap
   net-pop
   net-smtp
