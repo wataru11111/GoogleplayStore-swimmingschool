@@ -1,24 +1,26 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "~> 3.3.0"
+ruby "3.3.0"
 
 # --- Rails & DB関連 ---
-gem 'rails', '~> 6.1.7', '>= 6.1.7.3'
+gem 'rails', '~> 7.0.8'
 
 group :development, :test do
-  gem 'sqlite3', '~> 1.4' # ✅ 開発＆テスト用
+  gem 'sqlite3', '~> 1.4'
 end
 
 group :production do
-  gem 'mysql2', '~> 0.5.5' # ✅ 本番用（PlanetScale用）
+  gem 'mysql2', '~> 0.5.5'
 end
 
-# --- Webサーバーなど ---
+# --- Webサーバー・アセット管理 ---
+gem "logger"
 gem 'puma', '~> 3.11'
-gem 'sass-rails', '>= 6'
-gem 'webpacker', '~> 5.0'
-gem 'turbolinks', '~> 5'
+gem 'sassc-rails'           # ✅ ここに変更！
+gem 'importmap-rails'       # ✅ JS管理用（または下の jsbundling）
+gem 'turbo-rails'           # ✅ Turbo導入
+gem 'stimulus-rails'        # ✅ Stimulus導入
 gem 'jbuilder', '~> 2.7'
 gem 'bootsnap', '>= 1.4.4', require: false
 
@@ -33,7 +35,7 @@ gem "net-smtp"
 gem "net-pop"
 gem "net-imap"
 
-# --- Windows専用（LinuxやVercelでは不要だが保持してもOK） ---
+# --- Windows専用 ---
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'wdm', '>= 0.1.0', platforms: [:mswin, :mingw, :x64_mingw]
 
@@ -43,7 +45,7 @@ group :development do
   gem 'rack-mini-profiler', '~> 2.0'
   gem 'listen', '~> 3.3'
   gem 'spring'
-  gem 'webrick' # ✅ Ruby 3系では必須（Webrickが標準でなくなったため）
+  gem 'webrick'
 end
 
 group :development, :test do

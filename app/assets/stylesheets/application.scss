@@ -1,0 +1,70 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+
+// --- 背景画像クラス（元々のCSS） ---
+.custom-background {
+  background-image: url('/assets/綺麗な背景.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+// --- FullCalendar カスタマイズ ---
+.fc-daygrid-day-number {
+  font-size: 30px;
+}
+
+.fc-day-wed {
+  background: #E1F5FE;
+}
+
+.fc-day-thu {
+  background: #C5E1A5;
+}
+
+.fc-day-sat {
+  background: #FFD54F;
+}
+
+.fc-day-sun {
+  background: #F48FB1;
+}
+
+// --- ページ全体の高さとフォーム周り ---
+html, body {
+  height: 100%;
+  overflow: auto;
+}
+
+form {
+  min-height: calc(100vh - 50px);
+  margin-bottom: 2rem;
+}
+
+// --- 📅 カレンダー表示用（旧 calendar.scss の内容） ---
+.calendar-photo-container {
+  text-align: center; /* 写真を中央揃え */
+  margin-top: 20px;
+}
+
+.calendar-photo {
+  max-width: 100%; /* 幅を調整してレスポンシブ対応 */
+  height: auto; /* 高さを自動調整 */
+  border: 2px solid #ddd; /* 枠線を追加 */
+  border-radius: 10px; /* 角を丸く */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 影を追加 */
+}

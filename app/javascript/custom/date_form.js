@@ -51,4 +51,4 @@ function initializeDateFormScripts() {
   contactDeySelect.addEventListener("change", updateTimeOptions);
 }
 
-document.addEventListener("turbolinks:load", initializeDateFormScripts);
+document.addEventListener("turbo:load", initializeDateFormScripts);

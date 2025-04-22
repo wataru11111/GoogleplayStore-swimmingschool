@@ -46,5 +46,5 @@ function initializeChildEditFormScripts() {
   }
   
   // turbolinks:load イベントに対応
-  document.addEventListener("turbolinks:load", initializeChildEditFormScripts);
+  document.addEventListener("turbo:load", initializeChildEditFormScripts);
   

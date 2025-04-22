@@ -10,16 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_04_08_134900) do
-
+ActiveRecord::Schema[7.0].define(version: 2025_04_08_134900) do
   create_table "admins", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "reset_password_sent_at", precision: nil
+    t.datetime "remember_created_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["email"], name: "index_admins_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
   end
@@ -34,8 +33,8 @@ ActiveRecord::Schema.define(version: 2025_04_08_134900) do
     t.string "contact_dey", null: false
     t.string "level", null: false
     t.string "telephone_number", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "customers", force: :cascade do |t|
@@ -50,10 +49,10 @@ ActiveRecord::Schema.define(version: 2025_04_08_134900) do
     t.string "encrypted_password", default: "", null: false
     t.integer "status", default: 0, null: false
     t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "reset_password_sent_at", precision: nil
+    t.datetime "remember_created_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["email"], name: "index_customers_on_email", unique: true
     t.index ["reset_password_token"], name: "index_customers_on_reset_password_token", unique: true
   end
@@ -68,8 +67,8 @@ ActiveRecord::Schema.define(version: 2025_04_08_134900) do
     t.string "first_name", null: false
     t.string "contact_time", null: false
     t.string "contact_dey", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["child_id", "off_day"], name: "index_offs_on_child_id_and_off_day", unique: true
   end
 
@@ -80,11 +79,11 @@ ActiveRecord::Schema.define(version: 2025_04_08_134900) do
     t.string "first_name", null: false
     t.date "transfer_date", null: false
     t.string "transfer_time", null: false
-    t.string "telephone_number", null: false
+    t.string "telephone_number"
     t.string "level", null: false
     t.string "contact_dey", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end
