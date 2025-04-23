@@ -11,7 +11,7 @@ group :development, :test do
 end
 
 group :production do
-  gem 'mysql2', '~> 0.5.4'
+  gem 'mysql2', '~> 0.5.3', platforms: [:ruby]
 end
 
 # --- Webサーバー・アセット管理 ---
