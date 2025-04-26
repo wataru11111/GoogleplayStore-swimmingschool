@@ -4,19 +4,20 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby "3.3.0"
 
 # --- Rails & DB関連 ---
-gem 'rails', '~> 7.0.8'
+gem 'rails', '~> 7.1.3'
 
 group :development, :test do
   gem 'sqlite3', '~> 1.4'
 end
 
 group :production do
-  gem 'mysql2', '~> 0.5.3', platforms: [:ruby]
+  gem 'mysql2', '~> 0.5.5', platforms: [:mri]
+  gem 'puma-daemon'
 end
 
 # --- Webサーバー・アセット管理 ---
-gem "logger"
-gem 'puma', '~> 3.11'
+gem 'logger', require: false
+gem 'puma', '~> 6.0'
 gem 'sassc-rails'           # ✅ ここに変更！
 gem 'importmap-rails'       # ✅ JS管理用（または下の jsbundling）
 gem 'turbo-rails'           # ✅ Turbo導入

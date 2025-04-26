@@ -47,6 +47,8 @@ bind "tcp://0.0.0.0:3000"  # こちらを使用
 rails_root = Dir.pwd
 # 本番環境のみデーモン起動
 if Rails.env.production?
+  require 'puma/daemon'
+
   pidfile File.join(rails_root, 'tmp', 'pids', 'puma.pid')
   state_path File.join(rails_root, 'tmp', 'pids', 'puma.state')
   stdout_redirect(
@@ -55,5 +57,5 @@ if Rails.env.production?
     true
   )
   # デーモン
-  daemonize
+  daemonize true
 end

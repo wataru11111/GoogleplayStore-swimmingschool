@@ -1,6 +1,13 @@
 //= link_tree ../images
 //= link_directory ../stylesheets .css
 //= link 2月3月スケジュール表.png
+//= link application.js
+//= link preact.js
+//= link preact--compat.js
+//= link preact--hooks.js
+//= link controllers/application.js
+//= link controllers/hello_controller.js
+//= link controllers/index.js
 
 {
   "name": "Swimming School",
