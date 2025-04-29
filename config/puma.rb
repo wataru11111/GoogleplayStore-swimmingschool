@@ -15,11 +15,11 @@ worker_timeout 3600 if ENV.fetch("RAILS_ENV", "development") == "development"
 
 # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
 #
-port ENV.fetch("PORT") { 3000 }
+port ENV.fetch("PORT") { 8080 }
 
 # Specifies the `environment` that Puma will run in.
 #
-environment ENV.fetch("RAILS_ENV") { "development" }
+environment ENV.fetch("RAILS_ENV") { "production" }
 
 # Specifies the `pidfile` that Puma will use.
 pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
@@ -43,7 +43,7 @@ pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
 plugin :tmp_restart
 
 #bind "unix://#{Rails.root}/tmp/sockets/puma.sock"
-bind "tcp://0.0.0.0:3000"  # こちらを使用
+bind "tcp://0.0.0.0:#{ENV.fetch("PORT") { 8080 }}"  # こちらを使用
 rails_root = Dir.pwd
 # 本番環境のみデーモン起動
 if Rails.env.production?

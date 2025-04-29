@@ -40,13 +40,15 @@ gem "net-imap"
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'wdm', '>= 0.1.0', platforms: [:mswin, :mingw, :x64_mingw]
 
+# --- webrick追加 ---
+gem 'webrick', platforms: [:ruby]
+
 # --- 開発用 ---
 group :development do
   gem 'web-console', '>= 4.1.0'
   gem 'rack-mini-profiler', '~> 2.0'
   gem 'listen', '~> 3.3'
   gem 'spring'
-  gem 'webrick'
 end
 
 group :development, :test do
