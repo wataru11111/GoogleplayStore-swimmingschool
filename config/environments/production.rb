@@ -104,7 +104,7 @@ Rails.application.configure do
   # config/environments/production.rb
 
   config.hosts << "googleplaystore-swimmingschool-production.up.railway.app"
-
+  config.hosts.clear
 
   # Inserts middleware to perform automatic connection switching.
   # The `database_selector` hash is used to pass options to the DatabaseSelector
