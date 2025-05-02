@@ -8,7 +8,10 @@ gem 'rails', '~> 7.1.3'
 
 group :development, :test do
   gem 'sqlite3', '~> 1.4'
+  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem "planetscale_rails"
 end
+
 
 group :production do
   gem 'mysql2', '~> 0.5.5', platforms: [:mri]
@@ -49,10 +52,6 @@ group :development do
   gem 'rack-mini-profiler', '~> 2.0'
   gem 'listen', '~> 3.3'
   gem 'spring'
-end
-
-group :development, :test do
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 end
 
 group :test do
