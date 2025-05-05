@@ -68,3 +68,32 @@ form {
   border-radius: 10px; /* 角を丸く */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 影を追加 */
 }
+
+/* 共通ナビゲーション調整 */
+.navbar-nav {
+  text-align: center;
+  align-items: center;
+  width: 100%;
+}
+
+.navbar-nav .nav-item {
+  margin: 0.3rem 0;
+}
+
+/* 「トップページ」リンクを少し小さくする */
+.navbar .navbar-brand {
+  font-size: 1rem;
+}
+
+/* ログアウトボタンの form を中央に */
+.navbar-nav form {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* ボタンそのものも中央揃え */
+.navbar-nav form button {
+  text-align: center;
+  width: 100%;
+}

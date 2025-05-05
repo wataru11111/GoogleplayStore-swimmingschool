@@ -49,8 +49,8 @@ gem 'webrick', platforms: [:ruby]
 # --- 開発用 ---
 group :development do
   gem 'web-console', '>= 4.1.0'
-  gem 'rack-mini-profiler', '~> 2.0'
-  gem 'listen', '~> 3.3'
+  gem 'rack-mini-profiler', '~> 3.2'
+  gem 'listen', '~> 3.7'
   gem 'spring'
 end
 

@@ -5,6 +5,7 @@ import "@hotwired/turbo-rails"
 // --- Stimulus（使うなら）---
 import "controllers"
 
+
 // --- jQuery, Popper, Bootstrap ---
 // これらは Importmap では使いづらいため削除するか CDN対応推奨
 // 例：application.html.erb に <script src=...> で読み込む
