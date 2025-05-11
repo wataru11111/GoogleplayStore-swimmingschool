@@ -5,6 +5,8 @@ ruby "3.3.0"
 
 # --- Rails & DB関連 ---
 gem 'rails', '~> 7.1.3'
+# --- OneSignal通知API用 ---
+gem 'httparty'
 
 group :development, :test do
   gem 'sqlite3', '~> 1.4'

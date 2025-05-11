@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+ # OneSignal通知用APIエンドポイント
+  post 'api/notify_update', to: 'notifications#update_notice'
+
   devise_for :customers, skip: [:passwords], controllers: {
     registrations: "public/registrations",
     sessions: 'public/sessions'
