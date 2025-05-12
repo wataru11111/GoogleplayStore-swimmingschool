@@ -39,13 +39,31 @@
      <!-- OneSignal Web Push SDK -->
      <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
      <script>
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-      OneSignalDeferred.push(async function(OneSignal) {
-       await OneSignal.init({
-        appId: "eaeeaece-0313-4653-aea0-84362282265d"
-        });
-       });
+       window.OneSignalDeferred = window.OneSignalDeferred || [];
+       OneSignalDeferred.push(function(OneSignal) {
+        OneSignal.init({
+         appId: "eaeeaece-0313-4653-aea0-84362282265d",
+         notifyButton: {
+          enable: true,
+          text: {
+           'tip.state.unsubscribed': '通知を受け取るにはクリックしてください',
+           'tip.state.subscribed': '通知を受け取っています',
+           'tip.state.blocked': '通知がブロックされています',
+           'message.prenotify': '新着情報の通知を受け取りますか？',
+           'message.action.subscribed': '登録しました！通知を受け取ります。',
+           'message.action.resubscribed': '通知を再度登録しました',
+           'message.action.unsubscribed': '通知の受け取りを停止しました',
+           'dialog.main.title': '通知を有効にしますか？',
+           'dialog.main.button.subscribe': '有効にする',
+           'dialog.main.button.unsubscribe': '無効にする',
+           'dialog.blocked.title': '通知がブロックされています',
+           'dialog.blocked.message': 'ブラウザの設定から通知を有効にしてください'
+          }
+        }
+      });
+     });
     </script>
+
 
   </head>
 
