@@ -50,18 +50,18 @@
   <h3>振り替え入力欄</h3>
 
   <div class="field">
-    <%= f.label :last_name, "苗字", for: "last_name" %><br />
+    <%= f.label :last_name, "姓", for: "last_name" %><br />
     <%= f.text_field :last_name, id: "last_name" %>
   </div>
 
   <div class="field">
-    <%= f.label :first_name, "名前", for: "first_name" %><br />
+    <%= f.label :first_name, "名", for: "first_name" %><br />
     <%= f.text_field :first_name, id: "first_name" %>
   </div>
 
   <div class="field">
     <%= f.label :transfer_date, "振替日", for: "transfer_date" %><br />
-    <%= f.date_field :transfer_date, id: "transfer_date" %>
+    <%= f.date_field :transfer_date, id: "transfer_date", min: Date.tomorrow %>
   </div>
 
   <div class="field">

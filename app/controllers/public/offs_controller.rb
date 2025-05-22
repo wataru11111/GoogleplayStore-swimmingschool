@@ -10,17 +10,13 @@ class Public::OffsController < ApplicationController
         redirect_to customers_show_path and return
     end
     
-      begin
-        # フォームから送られる off_month を使用して日付を作成
-        off_date = Date.new(
-          params[:off]["off_month(1i)"].to_i,
-          params[:off]["off_month(2i)"].to_i,
-          params[:off]["off_month(3i)"].to_i
-        )
-      rescue ArgumentError => e
-        flash[:alert] = "無効な日付が選択されました: #{e.message}"
-        redirect_to new_off_path and return
-      end
+      # ✅ カレンダー形式（date_field）から受け取った文字列を Date 型に変換
+    begin
+      off_date = Date.parse(params[:off][:off_month])
+    rescue ArgumentError
+      flash[:alert] = "無効なお休み日付が選択されました。"
+      redirect_to new_off_path and return
+    end
     
       # 過去の日付や当日の10時以降は登録不可
       if off_date < Date.today || (off_date == Date.today && Time.now >= Time.parse("10:00"))
@@ -43,8 +39,10 @@ class Public::OffsController < ApplicationController
         @off.child_id = child.id
         @off.level = child.level
         @off.flag = 0
-        @off.contact_time = child.contact_time
-        @off.contact_dey = child.contact_dey
+        @off.contact_time1 = child.contact_time1
+        @off.contact_time2 = child.contact_time2
+        @off.contact_dey1 = child.contact_dey1
+        @off.contact_dey2 = child.contact_dey2
         @off.last_name = child.last_name # NOT NULL制約を満たすため
         @off.first_name = child.first_name # NOT NULL制約を満たすため
     
@@ -64,6 +62,11 @@ class Public::OffsController < ApplicationController
 
     def index
       @offs = Off.all
+    end
+
+    def show
+      @off = Off.find(params[:id])
+      redirect_to show_absences_off_path(id: @off.child_id)
     end
 
     def show_absences
@@ -122,6 +125,6 @@ class Public::OffsController < ApplicationController
     private
 
     def off_params
-      params.require(:off).permit(:off_day, :off_month, :child_id, :level, :contact_time, :contact_dey)
+      params.require(:off).permit(:off_day, :off_month, :child_id, :contact_dey1, :contact_dey2, :level,  :contact_time1, :contact_time2,)
     end
   end

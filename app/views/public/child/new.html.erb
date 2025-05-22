@@ -23,23 +23,40 @@
     </div>
 
     <div class="field">
-      <%= f.label :契約曜日 %><br />
-      <%= f.select :contact_dey, 
-                   [["水曜日", "水曜日"], ["木曜日", "木曜日"], ["土曜日", "土曜日"], ["日曜日", "日曜日"]], 
-                   include_blank: "曜日選択", 
-                   id: "child_contact_dey" %>
+     <%= f.label :契約回数 %><br />
+     <%= select_tag 'contract_count', options_for_select(['週1回', '週2回']), id: 'contract_count' %>
     </div>
+
+    <div class="field">
+     <%= f.label :契約曜日1 %><br />
+     <%= f.select :contact_dey1,
+                  [["水曜日", "水曜日"], ["木曜日", "木曜日"], ["土曜日", "土曜日"], ["日曜日", "日曜日"]],
+                  include_blank: "曜日選択" %>
+    </div>
+
+    <div class="field">
+     <%= f.label :契約時間1 %><br />
+     <%= f.select :contact_time1, [], include_blank: "時間選択", id: "child_contact_time1" %>
+    </div>
+
+    <div class="field" id="contact-dey2-field" style="display:none;">
+      <%= f.label :契約曜日2 %><br />
+      <%= f.select :contact_dey2,
+                   [["水曜日", "水曜日"], ["木曜日", "木曜日"], ["土曜日", "土曜日"], ["日曜日", "日曜日"]],
+                   include_blank: "曜日選択" %>
+    </div>
+
+    <div class="field" id="contact-time2-field" style="display:none;">
+      <%= f.label :契約時間2 %><br />
+      <%= f.select :contact_time2, [], include_blank: "時間選択", id: "child_contact_time2" %>
+    </div>
+
 
     <div class="field">
       <%= f.label :クラス %><br />
       <%= f.select :level, 
                    [["カニ", "カニ"], ["ラッコ", "ラッコ"], ["イルカ", "イルカ"], ["黄星1", "黄星1"], ["黄星2", "黄星2"], ["黄星3", "黄星3"], ["黄星4", "黄星4"], ["青星1", "青星1"], ["青星2", "青星2"], ["青星3", "青星3"], ["青星4", "青星4"], ["赤星1", "赤星1"], ["赤星2", "赤星2"], ["赤星3", "赤星3"], ["赤星4", "赤星4"], ["ピンク星1", "ピンク星1"], ["ピンク星2", "ピンク星2"], ["ピンク星3", "ピンク星3"], ["ピンク星4", "ピンク星4"],["AS", "AS"]], 
                    include_blank: "クラス選択" %>
-    </div>
-
-    <div class="field">
-      <%= f.label :契約時間 %><br />
-      <%= f.select :contact_time, [], include_blank: "時間選択", id: "child_contact_time" %>
     </div>
 
     <div class="field">

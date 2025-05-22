@@ -1,6 +1,11 @@
 <div class="calendar-photo-container">
-  <h2>4月5月スケジュール表</h2>
-  <%= image_tag '2025.4.5スケジュール.png', class: 'calendar-photo', alt: 'カレンダー写真' %>
+   <h2>4月5月スケジュール表</h2>
+<%= image_tag 'april_may_schedule.png', class: 'calendar-photo', alt: '4月5月スケジュール' %>
+</div>
+
+<div class="calendar-photo-container">
+  <h2>6月7月スケジュール表</h2>
+  <%= image_tag 'june_july_schedule.png', class: 'calendar-photo', alt: '6月7月スケジュール' %>
 </div>
 
 
@@ -27,19 +32,20 @@
 
     <!-- お子さんの姓（last_name）の入力フィールド -->
     <div class="field">
-      <%= f.label :苗字 %><br />
+      <%= f.label :姓 %><br />
       <%= f.text_field :child_last_name %>
     </div>
 
     <!-- お子さんの名（first_name）の入力フィールド -->
     <div class="field">
-      <%= f.label :名前 %><br />
+      <%= f.label :名 %><br />
       <%= f.text_field :child_first_name %>
     </div>
     
+    <!-- 日付選択フィールド（カレンダー形式＋明日以降） -->
     <div class="field">
       <%= f.label :お休み日付 %><br />
-      <%= f.date_select :off_month, { include_blank: true, use_month_numbers: true, order: [:year, :month, :day] } %>
+      <%= f.date_field :off_month, id: "off_month", min: Date.tomorrow %>
     </div>
 
     <div class="row">

@@ -11,11 +11,9 @@
         <p><strong>氏名:</strong> <%= child.last_name %> <%= child.first_name %></p>
         <p><strong>カナ:</strong> <%= child.last_name_kana %> <%= child.first_name_kana %></p>
         <p><strong>クラス:</strong> <%= child.level %></p>
-        <p><strong>契約時間:</strong> <%= child.contact_time %></p>
-        <p><strong>契約曜日:</strong> <%= child.contact_dey %></p>
+        <p><strong>契約時間:</strong> <%= [child.contact_time1, child.contact_time2].compact.join("・") %></p>
+        <p><strong>契約曜日:</strong> <%= [child.contact_dey1, child.contact_dey2].compact.join("・") %></p>
         <p>
-          <strong>お休み:</strong>
-          <%= Off.where(child_id: child.id, flag: 0).count %>日
           <%= link_to 'お休みを確認', show_absences_off_path(id: child.id), class: "btn-confirm" %>
         </p>
       </div>

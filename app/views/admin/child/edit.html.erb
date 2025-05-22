@@ -28,13 +28,30 @@
     </div>
 
     <div class="form-group">
-      <%= f.label :contact_dey, "契約曜日" %>
-      <%= f.text_field :contact_dey, class: "form-control" %>
+     <%= f.label :contact_dey1, "契約曜日1" %>
+     <%= f.select :contact_dey1,
+          [["水曜日", "水曜日"], ["木曜日", "木曜日"], ["土曜日", "土曜日"], ["日曜日", "日曜日"]],
+          { include_blank: "曜日選択" },
+          { class: "form-control" } %>
     </div>
 
     <div class="form-group">
-      <%= f.label :contact_time, "契約時間" %>
-      <%= f.text_field :contact_time, class: "form-control" %>
+      <%= f.label :contact_dey2, "契約曜日2" %>
+      <%= f.select :contact_dey2,
+          [["水曜日", "水曜日"], ["木曜日", "木曜日"], ["土曜日", "土曜日"], ["日曜日", "日曜日"]],
+          { include_blank: "曜日選択" },
+          { class: "form-control" } %>
+    </div>
+
+
+    <div class="field">
+      <%= f.label :契約時間1 %><br />
+      <%= f.select :contact_time1, [], include_blank: "時間選択", id: "child_contact_time1" %>
+    </div>
+
+    <div class="field" id="contact-time2-field" style="display:none;">
+      <%= f.label :契約時間2 %><br />
+      <%= f.select :contact_time2, [], include_blank: "時間選択", id: "child_contact_time2" %>
     </div>
 
     <div class="form-group">

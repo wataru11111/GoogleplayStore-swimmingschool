@@ -4,43 +4,57 @@ class Public::DateController < ApplicationController
   end
 
   def create
-    @date = Transfer.new(transfer_params)
-  
-    # お子さんを検索
-    child = current_customer.children.find_by(
-      first_name: params[:transfer][:first_name],
-      last_name: params[:transfer][:last_name]
-    )
-  
-    unless child
-      flash[:alert] = "指定されたお子さんが見つかりませんでした。"
-      redirect_to date_index_path and return
-    end
-  
-    # お休みデータを検索（flag: 0 かつ child_id 一致するもの）
-    off = child.offs.where(flag: 0).first
-    unless off
-      flash[:alert] = "振替に必要なお休みが見つかりませんでした。"
-      redirect_to date_index_path and return
-    end
-  
-    # Transferオブジェクトにデータを設定
-    @date.child_id = child.id
-    @date.off_id = off.id
-    @date.transfer_date = params[:transfer][:transfer_date] # そのまま設定
-    @date.transfer_time = params[:transfer][:transfer_time]
-  
-    # 振替登録の保存処理
-    if @date.save
-      # 振替登録が成功したら、対応するお休みデータのflagを更新
-      off.update(flag: 1)
-      flash[:notice] = "振替登録が完了しました。"
-      redirect_to dates_completion_path(id: @date.id)
-    else
-      flash[:alert] = @date.errors.full_messages.join(", ")
-      render :index
-    end
+  @date = Transfer.new(transfer_params)
+
+  # お子さんを検索
+  child = current_customer.children.find_by(
+    first_name: params[:transfer][:first_name],
+    last_name: params[:transfer][:last_name]
+  )
+
+  unless child
+    flash[:alert] = "指定されたお子さんが見つかりませんでした。"
+    redirect_to date_index_path and return
   end
+
+  # お休みデータを検索（flag: 0 かつ child_id 一致するもの）
+  off = child.offs.where(flag: 0).first
+  unless off
+    flash[:alert] = "振替に必要なお休みが見つかりませんでした。"
+    redirect_to date_index_path and return
+  end
+
+  # Transferオブジェクトにデータを設定
+  @date.child_id = child.id
+  @date.off_id = off.id
+  @date.transfer_date = params[:transfer][:transfer_date] # 日付文字列
+
+  # ✅ 振替日をチェック（前日までしか登録できない）
+  begin
+    transfer_day = Date.parse(@date.transfer_date)
+  rescue ArgumentError
+    flash[:alert] = "無効な振替日が選択されました。"
+    redirect_to date_index_path and return
+  end
+
+  if transfer_day <= Date.today
+    flash[:alert] = "振替は前日までに登録してください。当日や過去の日付は選べません。"
+    redirect_to date_index_path and return
+  end
+
+  @date.transfer_time = params[:transfer][:transfer_time]
+
+  # 振替登録の保存処理
+  if @date.save
+    off.update(flag: 1)
+    flash[:notice] = "振替登録が完了しました。"
+    redirect_to dates_completion_path(id: @date.id)
+  else
+    flash[:alert] = @date.errors.full_messages.join(", ")
+    render :index
+  end
+end
+
   
   
 

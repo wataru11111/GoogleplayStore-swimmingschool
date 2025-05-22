@@ -13,8 +13,8 @@
         データが見つかりません
       <% end %>
     </p>
-    <p><strong>契約曜日:</strong> <%= @off.child&.contact_dey || 'データが見つかりません' %></p>
-    <p><strong>契約時間:</strong> <%= @off.child&.contact_time || 'データが見つかりません' %></p>
+    <p><strong>契約曜日:</strong> <%= [@off.child&.contact_dey1, @off.child&.contact_dey2].compact.join("・") %></p>
+    <p><strong>契約時間:</strong> <%= [@off.child&.contact_time1, @off.child&.contact_time2].compact.join("・") %></p>
     <p><strong>クラス:</strong> <%= @off.child&.level || 'データが見つかりません' %></p>
   </div>
 

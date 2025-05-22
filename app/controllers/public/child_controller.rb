@@ -16,7 +16,7 @@ class Public::ChildController < ApplicationController
 
   def edit
     @child = current_customer.children.find(params[:id])
-    Rails.logger.debug("契約曜日: #{@child.contact_dey}, 契約時間: #{@child.contact_time}")
+    Rails.logger.debug("契約曜日1: #{@child.contact_dey1}, 曜日2: #{@child.contact_dey2}, 時間1: #{@child.contact_time1}, 時間2: #{@child.contact_time2}")
   end
 
   def update
@@ -42,6 +42,7 @@ class Public::ChildController < ApplicationController
   private
 
   def child_params
-    params.require(:child).permit(:last_name, :first_name, :last_name_kana, :first_name_kana, :contact_dey, :level, :contact_time, :telephone_number)
+  params.require(:child).permit( :last_name, :first_name, :last_name_kana, :first_name_kana, :contact_dey1, :contact_dey2, :level,  :contact_time1, :contact_time2, :telephone_number )
   end
+
 end

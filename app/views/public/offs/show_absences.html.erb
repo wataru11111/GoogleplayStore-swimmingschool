@@ -1,39 +1,38 @@
 <!-- app/views/public/offs/show_absences.html.erb -->
+
 <h1>お休み確認ページ</h1>
 <p>以下の日付でお休みしています:</p>
 <h1><%= @child.last_name %> <%= @child.first_name %>さんのお休み一覧</h1>
 
-<ul>
+<ul class="offs-list">
   <% @offs.each do |off| %>
-    <li>
-      <% begin %>
-        <% if off.off_month.present? %>
-          <!-- `off_month` を直接フォーマット -->
-          <%= off.off_month.strftime("%m月 %d日") %> <!-- お休みの日付を表示 -->
+    <% if off.off_month.present? %>
+      <li class="off-item">
+        <span class="off-date"><%= off.off_month.strftime("%m月 %d日") %></span>
 
-          <% if off.flag == 2 %>
-            <!-- 期限切れの表示 -->
-            <span class="badge badge-danger">期限切れ</span>
-          <% elsif off.transfer_registered? %>
-            <% transfer = off.registered_transfer %>
-            <span class="badge badge-success">
-              振替済み (振替日: <%= transfer.transfer_date.strftime("%m月 %d日") %>)
-            </span>
-          <% else %>
-            <!-- 振替未済の時のみ、変更と削除ボタンを表示 -->
-            <%= link_to '変更する', edit_absence_off_path(off), class: "btn btn-sm btn-warning" %>
-            <%= link_to '削除', off_path(off), method: :delete, data: { confirm: "本当にこのお休みをキャンセルしますか？" }, class: "btn btn-sm btn-danger" %>
-          <% end %>
+        <% if off.flag == 2 %>
+          <span class="badge badge-danger">期限切れ</span>
+        <% elsif off.transfer_registered? %>
+          <% transfer = off.registered_transfer %>
+          <span class="badge badge-success">
+            振替済み (振替日: <%= transfer.transfer_date.strftime("%m月 %d日") %>)
+          </span>
         <% else %>
-          <!-- 日付が欠損している場合のメッセージ -->
-          <span class="text-danger">不明な日付 (off_month: <%= off.off_month.inspect %>)</span>
-        <% end %>
-      <% rescue ArgumentError => e %>
-        <!-- 不正な日付データがあった場合のエラーメッセージ -->
-        <span class="text-danger">不正な日付 (エラー内容: <%= e.message %>)</span>
-      <% end %>
-    </li>
+          <span class="inline-buttons">
+            <%= link_to '変更する', edit_absence_off_path(off), class: "btn btn-sm btn-warning" %>
+            <%= button_to off_path(off),
+               method: :delete,
+               form_class: "inline-form",
+               data: { confirm: "本当に削除しますか？" } do %>
+             <span class="btn btn-sm btn-danger">削除</span>
+           <% end %>
+          </span>
+       <% end %>
+      </li>
+    <% end %>
   <% end %>
 </ul>
 
+
 <%= link_to '戻る', customers_show_path %>
+

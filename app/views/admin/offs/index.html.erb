@@ -31,8 +31,8 @@
         <tr>
           <td><%= off.off_month %></td>
           <td><%= off.child.last_name %> <%= off.child.first_name %></td>
-          <td><%= off.child.contact_time %></td>
-          <td><%= off.child.contact_dey %></td>
+          <td><%= [child.contact_time1, child.contact_time2].compact.join("・") %></td>
+          <td><%= [off.child.contact_dey1, off.child.contact_dey2].compact.join("・") %></td>
           <td><%= off.child.level %></td>
         </tr>
       <% end %>

@@ -20,6 +20,6 @@
     private
 
     def child_params
-      params.require(:child).permit(:last_name, :first_name, :last_name_kana, :first_name_kana, :level, :contact_dey, :contact_time)
+      params.require(:child).permit(:last_name, :first_name, :last_name_kana, :first_name_kana, :level, :contact_dey1, :contact_dey2, :contact_time1, :contact_time2)
     end
   end
