@@ -25,22 +25,20 @@ class Public::DateController < ApplicationController
   end
 
   # Transferオブジェクトにデータを設定
-  @date.child_id = child.id
-  @date.off_id = off.id
-  @date.transfer_date = params[:transfer][:transfer_date] # 日付文字列
+   @date.child_id = child.id
+   @date.off_id = off.id
+   @date.transfer_date = Date.parse(params[:transfer][:transfer_date]) rescue nil
 
-  # ✅ 振替日をチェック（前日までしか登録できない）
-  begin
-    transfer_day = Date.parse(@date.transfer_date)
-  rescue ArgumentError
-    flash[:alert] = "無効な振替日が選択されました。"
-    redirect_to date_index_path and return
-  end
+   if @date.transfer_date.nil?
+     flash[:alert] = "無効な振替日が選択されました。"
+     redirect_to date_index_path and return
+   end
 
-  if transfer_day <= Date.today
-    flash[:alert] = "振替は前日までに登録してください。当日や過去の日付は選べません。"
-    redirect_to date_index_path and return
-  end
+  # 前日までしか登録できないチェック
+   if @date.transfer_date <= Date.today
+     flash[:alert] = "振替は前日までに登録してください。当日や過去の日付は選べません。"
+     redirect_to date_index_path and return
+   end
 
   @date.transfer_time = params[:transfer][:transfer_time]
 
