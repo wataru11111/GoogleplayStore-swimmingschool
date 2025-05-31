@@ -69,7 +69,7 @@
         <strong>契約曜日:</strong> <%= [child.contact_dey1, child.contact_dey2].compact.join("・") %>
       </div>
       <div class="col-md-3">
-        <strong>契約時間:</strong> <%= child.contact_time %>
+        <strong>契約時間:</strong> <%= [child.contact_time1, child.contact_time2].compact.join("・") %>
       </div>
       <div class="col-md-3">
         <strong>お休み:</strong> <%= Off.where(child_id: child.id, flag: 0).count %>日
