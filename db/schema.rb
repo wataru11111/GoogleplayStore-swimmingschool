@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_20_205405) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_29_031352) do
   create_table "admins", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -74,6 +74,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_20_205405) do
     t.string "contact_dey1"
     t.string "contact_dey2"
     t.index ["child_id", "off_day"], name: "index_offs_on_child_id_and_off_day", unique: true
+  end
+
+  create_table "settings", force: :cascade do |t|
+    t.string "key"
+    t.string "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "transfers", force: :cascade do |t|

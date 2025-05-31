@@ -13,6 +13,14 @@ class Public::OffsController < ApplicationController
       # ✅ カレンダー形式（date_field）から受け取った文字列を Date 型に変換
     begin
       off_date = Date.parse(params[:off][:off_month])
+      limit_day = Setting.find_by(key: 'available_off_day')&.value
+     if limit_day.present? && off_date > Date.parse(limit_day)
+      flash[:alert] = "まだスケジュールが未定です。"
+      redirect_to new_off_path and return
+     end
+
+
+
     rescue ArgumentError
       flash[:alert] = "無効なお休み日付が選択されました。"
       redirect_to new_off_path and return

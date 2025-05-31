@@ -45,7 +45,7 @@
     <!-- 日付選択フィールド（カレンダー形式＋明日以降） -->
     <div class="field">
       <%= f.label :お休み日付 %><br />
-      <%= f.date_field :off_month, id: "off_month", min: Date.tomorrow %>
+      <%= f.date_field :off_month, id: "off_month", min: Date.tomorrow, max: Setting.find_by(key: 'available_off_day')&.value %>
     </div>
 
     <div class="row">

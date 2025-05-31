@@ -61,7 +61,7 @@
 
   <div class="field">
     <%= f.label :transfer_date, "振替日", for: "transfer_date" %><br />
-    <%= f.date_field :transfer_date, id: "transfer_date", min: Date.tomorrow %>
+    <%= f.date_field :transfer_date, id: "transfer_date", min: Date.tomorrow, max: Setting.find_by(key: 'available_transfer_day')&.value %>
   </div>
 
   <div class="field">

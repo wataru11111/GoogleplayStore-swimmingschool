@@ -34,6 +34,14 @@ class Public::DateController < ApplicationController
      redirect_to date_index_path and return
    end
 
+  # ✅ 振替日が許可された月か確認
+    limit_day = Setting.find_by(key: 'available_transfer_day')&.value
+   if limit_day.present? && @date.transfer_date > Date.parse(limit_day)
+     flash[:alert] = "まだスケジュールが未定です。"
+     redirect_to date_index_path and return
+   end
+
+
   # 前日までしか登録できないチェック
    if @date.transfer_date <= Date.today
      flash[:alert] = "振替は前日までに登録してください。当日や過去の日付は選べません。"

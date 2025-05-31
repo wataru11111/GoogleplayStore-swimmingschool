@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     end
     resources :offs, only: [:index] # お休み一覧ページのルート
     resources :child, only: [:edit, :update] # 管理者用の子供編集ページ
+    resources :settings, only: [:index, :update]# スケジュール管理
   end
 
   scope module: :public do

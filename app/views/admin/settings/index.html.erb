@@ -1,0 +1,14 @@
+<h2>登録可能年月設定</h2>
+
+<%= form_with url: admin_setting_path('1'), method: :put do %>
+  <div>
+    <label>お休み登録可能最終日 (例: 2025-06-27):</label>
+    <%= text_field_tag :available_off_day, @available_off_day %>
+  </div>
+  <div>
+    <label>振替登録可能最終日 (例: 2025-06-27):</label>
+    <%= text_field_tag :available_transfer_day, @available_transfer_day %>
+  </div>
+  <%= submit_tag "設定を保存" %>
+<% end %>
+
