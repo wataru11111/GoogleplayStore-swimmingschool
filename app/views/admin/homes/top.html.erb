@@ -1,6 +1,7 @@
 <div class="container">
   <h1>振替一覧</h1>
-<!-- 振替検索フォーム -->
+
+  <!-- 振替検索フォーム -->
   <%= form_with url: admin_path, method: :get, local: true do %>
     <div class="form-group">
       <%= label_tag :search_date, "日付を選択" %>
@@ -9,31 +10,30 @@
     <%= submit_tag "検索", class: "btn btn-primary" %>
   <% end %>
 
-
-<!-- 検索結果 -->
+  <!-- 検索結果（時間×クラス） -->
   <% if @time_level_slots.present? %>
-  <div class="mt-3">
-    <h4>【時間 × クラスごとの振替人数】</h4>
-    <ul>
-      <% @time_level_slots.each do |label, count_text| %>
-        <li><%= label %>：<%= count_text %></li>
-      <% end %>
-    </ul>
-  </div>
-  <% else %>
+    <div class="mt-3">
+      <h4>【時間 × クラスごとの振替人数】</h4>
+      <ul>
+        <% @time_level_slots.each do |label, count_text| %>
+          <li><%= label %>：<%= count_text %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% elsif params[:search_date].present? %>
     <p>この日の振替情報はありません。</p>
   <% end %>
 
-
+  <!-- 振替件数の表示 -->
+  <% if params[:search_date].present? %>
     <h3><%= params[:search_date] %> の振替人数: <%= @dates.size %></h3>
   <% else %>
     <h3>全ての振替情報を表示中 (人数: <%= @dates.size %>)</h3>
   <% end %>
 
-  <!-- 振替情報 -->
+  <!-- 振替情報の一覧テーブル -->
   <table class="table">
     <thead>
-      <p>振替情報</p>
       <tr>
         <th>振替日</th>
         <th>氏名</th>
@@ -54,9 +54,5 @@
       <% end %>
     </tbody>
   </table>
-
-
-  
-
-
 </div>
+

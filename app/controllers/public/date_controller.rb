@@ -18,11 +18,13 @@ class Public::DateController < ApplicationController
   end
 
   # お休みデータを検索（flag: 0 かつ child_id 一致するもの）
-  off = child.offs.where(flag: 0).first
+  off = Off.find_by(id: params[:transfer][:off_id], child_id: child.id, flag: 0)
+
   unless off
-    flash[:alert] = "振替に必要なお休みが見つかりませんでした。"
+    flash[:alert] = "選択されたお休み日が無効です。"
     redirect_to date_index_path and return
   end
+
 
   # Transferオブジェクトにデータを設定
    @date.child_id = child.id
@@ -78,6 +80,9 @@ end
 
   def index
     @date = Transfer.new
+    @offs = current_customer.children.flat_map do |child|
+    child.offs.where(flag: 0).map { |off| [child.id, off] }
+   end
   end
 
   def confirmation
@@ -96,7 +101,7 @@ end
   def transfer_params
     params.require(:transfer).permit(
       :last_name, :first_name, :transfer_date, :level, :contact_dey, 
-      :transfer_time, :telephone_number,
+      :transfer_time, :telephone_number, :off_id
     )
   end
 end

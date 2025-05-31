@@ -60,6 +60,14 @@
   </div>
 
   <div class="field">
+    <%= f.label :off_id, "お休み日を選択", for: "off_id" %><br />
+    <%= f.select :off_id,
+        @offs.map { |child_id, off| ["#{off.off_month.strftime('%Y-%m-%d')}（#{Child.find(child_id).last_name} #{Child.find(child_id).first_name}）", off.id] },
+        { include_blank: "選択してください" },
+        { id: "off_id" } %>
+  </div>
+
+  <div class="field">
     <%= f.label :transfer_date, "振替日", for: "transfer_date" %><br />
     <%= f.date_field :transfer_date, id: "transfer_date", min: Date.tomorrow, max: Setting.find_by(key: 'available_transfer_day')&.value %>
   </div>

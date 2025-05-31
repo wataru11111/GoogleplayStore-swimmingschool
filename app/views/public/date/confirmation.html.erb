@@ -1,35 +1,32 @@
 <div class="container">
   <h2>振替日履歴</h2>
   <h2 style="color: red; font-weight: bold;">振替日の振替は<br>出来ません</h2>
-  <!-- 振替に関するメッセージ -->
-<p>振替日過ぎる前で変更したい場合は<br>こちらの080-5011-9947番号に<br>『お名前』『振替予定だった日にち』『振り替えたい日』『曜日と時間』を<br>記載してSMSメッセージをお願い致します。</p>
+  <p>
+    振替日過ぎる前で変更したい場合は<br>
+    こちらの 080-5011-9947 番号に<br>
+    『お名前』『振替予定だった日にち』『振り替えたい日』『曜日と時間』を<br>
+    記載して SMS メッセージをお願い致します。
+  </p>
 
-  <table class="table">
-    <thead>
-      <tr>
-        <th>お休み日</th>
-        <th>振替日</th>
-        <th>振替時間</th>
-        <th>クラス</th>
-      </tr>
-    </thead>
-    <tbody>
+  <% if @dates.present? %>
     <% @dates.each do |date| %>
-      <tr>
-        <td>
+      <div class="card mb-3 p-3 shadow-sm border rounded">
+        <p><strong>名前：</strong><%= "#{date.child.last_name} #{date.child.first_name}" %></p>
+        <p><strong>お休み日：</strong>
           <% if date.off.present? %>
             <%= date.off.off_month.strftime("%Y-%m-%d") %>
           <% else %>
             データが見つかりません
           <% end %>
-        </td>
-        <td><%= date.transfer_date.strftime("%Y-%m-%d") if date.transfer_date %></td>
-        <td><%= date.transfer_time %></td>
-        <td><%= date.level %></td>
-      </tr>
-      <% end %> 
-    </tbody>
-</table>
-</div>
+        </p>
+        <p><strong>振替日：</strong><%= date.transfer_date.strftime("%Y-%m-%d") if date.transfer_date %></p>
+        <p><strong>時間：</strong><%= date.transfer_time %></p>
+        <p><strong>クラス：</strong><%= date.level %></p>
+      </div>
+    <% end %>
+  <% else %>
+    <p>振替履歴はありません。</p>
+  <% end %>
 
-<%= link_to '戻る', customers_show_path %>
+  <%= link_to '戻る', customers_show_path, class: 'btn btn-secondary mt-3' %>
+</div>
