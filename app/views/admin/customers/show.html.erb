@@ -66,7 +66,7 @@
         <strong>クラス:</strong> <%= child.level %>
       </div>
       <div class="col-md-3">
-        <strong>契約曜日:</strong> <%= child.contact_dey %>
+        <strong>契約曜日:</strong> <%= [child.contact_dey1, child.contact_dey2].compact.join("・") %>
       </div>
       <div class="col-md-3">
         <strong>契約時間:</strong> <%= child.contact_time %>
