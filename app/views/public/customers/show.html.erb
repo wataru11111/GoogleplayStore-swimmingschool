@@ -14,10 +14,9 @@
         <p><strong>契約時間:</strong> <%= [child.contact_time1, child.contact_time2].compact.join("・") %></p>
         <p><strong>契約曜日:</strong> <%= [child.contact_dey1, child.contact_dey2].compact.join("・") %></p>
         <p>
-          <%= link_to 'お休みを確認', show_absences_off_path(id: child.id), class: "btn-confirm" %>
+          <%= link_to 'お休み日・振替日の確認', show_absences_off_path(id: child.id), class: "btn-confirm" %>
         </p>
-        <p>※振替登録が完了するとこちらでも確認出来ます</p>
-      </div>
+       </div>
     </div>
   <% end %>
 
