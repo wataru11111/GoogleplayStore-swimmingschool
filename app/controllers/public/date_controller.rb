@@ -49,6 +49,18 @@ class Public::DateController < ApplicationController
    end
 
   @date.transfer_time = params[:transfer][:transfer_time]
+  # ✅ 時間帯 × レベルの組み合わせが3人以上かチェック
+     count = Transfer.where(
+       transfer_date: @date.transfer_date,
+       transfer_time: @date.transfer_time,
+       level: @date.level
+     ).count
+
+   if count >= 3
+     flash[:alert] = "#{@date.transfer_time} の #{@date.level} クラスは定員に達しています。別の時間をお選びください。"
+     redirect_to date_index_path and return
+   end  
+
 
   # 振替登録の保存処理
   if @date.save
