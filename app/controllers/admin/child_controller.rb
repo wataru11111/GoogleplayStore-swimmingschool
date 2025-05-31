@@ -3,7 +3,7 @@
 
     def edit
       @child = Child.find(params[:id])
-      Rails.logger.debug("契約曜日: #{@child.contact_dey}, 契約時間: #{@child.contact_time}")
+      Rails.logger.debug("契約曜日: #{@child.contact_dey1}・#{@child.contact_dey2}, 契約時間: #{@child.contact_time1}・#{@child.contact_time2}")
     end
 
     def update

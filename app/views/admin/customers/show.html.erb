@@ -52,8 +52,8 @@
   <% @customer.children.each do |child| %>
     <h2 class="mt-5">お子さん情報</h2>
     <%= link_to edit_admin_child_path(child), class: "btn btn-warning" do %>
-  お子さん情報を編集
-<% end %>
+      お子さん情報を編集
+    <% end %>
 
     <div class="child-info row">
       <div class="col-md-3">
@@ -88,3 +88,4 @@
     <% end %>
   </div>
 </div>
+
