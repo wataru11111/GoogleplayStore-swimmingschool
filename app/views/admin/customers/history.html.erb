@@ -6,23 +6,27 @@
   <p>お休みした回数: <%= @offs.count %>回</p>
 
   <table class="table">
-    <thead>
-      <tr>
-        <th>お休み日</th>
-        <th>クラス</th>
-        <th>契約時間</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @offs.each do |off| %>
-        <tr>
-          <td><%= off.off_month.strftime("%Y-%m-%d") if off.off_month %></td>
-          <td><%= off.child.level %></td>
-          <td><%= off.child.contact_time %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+  <thead>
+    <tr>
+      <th>お休み日</th>
+      <th>クラス</th>
+      <th>契約時間</th>
+      <th>契約曜日</th>
+    </tr>
+  </thead>
+
+  <tbody>
+     <% @offs.each do |off| %>
+       <tr>
+         <td><%= off.off_month.strftime("%Y-%m-%d") if off.off_month %></td>
+         <td><%= off.child.level %></td>
+         <td><%= [off.child.contact_time1, off.child.contact_time2].compact.join(" / ") %></td>
+         <td><%= [off.child.contact_dey1, off.child.contact_dey2].compact.join(" / ") %></td>
+       </tr>
+     <% end %>
+   </tbody>
+ </table>
+
 
   <!-- 振替履歴 -->
   <h3 class="mt-5">振替履歴</h3>

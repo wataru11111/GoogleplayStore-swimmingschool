@@ -2,11 +2,12 @@
   <h1>会員一覧</h1>
 
   <!-- ジャンプリンク -->
-  <div class="alphabet-links mb-3">
-    <% ["あ行", "か行", "さ行", "た行", "な行", "は行", "ま行", "や行", "ら行", "わ行"].each_with_index do |group, index| %>
-      <%= link_to group, "#section-#{index}", class: "btn btn-secondary btn-sm" %>
-    <% end %>
-  </div>
+ <div class="alphabet-links mb-3">
+   <% ["あ行", "か行", "さ行", "た行", "な行", "は行", "ま行", "や行", "ら行", "わ行"].each_with_index do |group, index| %>
+     <button class="btn btn-secondary btn-sm me-1 mb-1 jump-link" data-target="section-<%= index %>"><%= group %></button>
+   <% end %>
+ </div>
+
 
   <!-- 会員テーブル -->
   <table class="table">
@@ -40,9 +41,12 @@
 
         <% if current_group != new_group %>
           <% current_group = new_group %>
+          <!-- グループ見出し -->
           <tr>
-            <td colspan="5" id="section-<%= ["あ行", "か行", "さ行", "た行", "な行", "は行", "ま行", "や行", "ら行", "わ行"].index(current_group) %>" class="bg-light text-center font-weight-bold">
-              <%= current_group %>
+            <td colspan="5">
+              <h4 id="section-<%= ["あ行", "か行", "さ行", "た行", "な行", "は行", "ま行", "や行", "ら行", "わ行"].index(current_group) %>" class="mt-4 border-bottom pt-3 pb-1">
+                🔹 <%= current_group %>
+              </h4>
             </td>
           </tr>
         <% end %>
@@ -66,6 +70,8 @@
             <% end %>
           </td>
         </tr>
+
+        <!-- お子さんの情報 -->
         <tr>
           <td colspan="5">
             <strong>お子さんの名前:</strong>
@@ -83,6 +89,5 @@
       <% end %>
     </tbody>
   </table>
-
-  <%= paginate @customers %>
 </div>
+

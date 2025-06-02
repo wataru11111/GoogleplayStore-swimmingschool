@@ -100,3 +100,16 @@ form {
 
 /* ✅ お休み一覧ページのCSSを読み込む */
 @import "public/offs";
+
+
+/* 固定ヘッダーの高さに応じて調整 */
+/* スクロール可能に　*/
+html {
+  scroll-behavior: smooth;
+}
+
+
+h4[id^="section-"], td[id^="section-"] {
+  scroll-margin-top: 80px;
+}
+

@@ -14,6 +14,8 @@ import "controllers"
 import "./custom/date_form"
 import "./custom/child_form"
 import "./custom/child_edit_form"
+import "./custom/jump_scroll"
+
 
 // --- ソフトキーボード対応 ---
 document.querySelectorAll('input, select, textarea').forEach((element) => {
