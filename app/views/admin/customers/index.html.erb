@@ -1,12 +1,15 @@
 <div class="container">
   <h1>会員一覧</h1>
 
-  <!-- ジャンプリンク -->
- <div class="alphabet-links mb-3">
-   <% ["あ行", "か行", "さ行", "た行", "な行", "は行", "ま行", "や行", "ら行", "わ行"].each_with_index do |group, index| %>
-     <button class="btn btn-secondary btn-sm me-1 mb-1 jump-link" data-target="section-<%= index %>"><%= group %></button>
-   <% end %>
- </div>
+  <!-- 検索フォーム -->
+  <%= form_with url: admin_customers_path, method: :get, local: true, class: "row g-2 mb-4" do %>
+    <div class="col-auto">
+      <%= text_field_tag :q, params[:q], class: "form-control", placeholder: "ひらがなで名前を検索（例：たなか）" %>
+    </div>
+    <div class="col-auto">
+      <%= submit_tag "検索", class: "btn btn-primary" %>
+    </div>
+  <% end %>
 
 
   <!-- 会員テーブル -->
@@ -21,37 +24,8 @@
       </tr>
     </thead>
 
-    <% current_group = nil %>
     <tbody>
       <% @customers.each do |customer| %>
-        <% first_char = customer.last_name_kana[0] %>
-        <% new_group = case first_char
-          when /^[あ-お]/ then "あ行"
-          when /^[か-こ]/ then "か行"
-          when /^[さ-そ]/ then "さ行"
-          when /^[た-と]/ then "た行"
-          when /^[な-の]/ then "な行"
-          when /^[は-ほ]/ then "は行"
-          when /^[ま-も]/ then "ま行"
-          when /^[や-よ]/ then "や行"
-          when /^[ら-ろ]/ then "ら行"
-          when /^[わ-ん]/ then "わ行"
-          else nil
-        end %>
-
-        <% if current_group != new_group %>
-          <% current_group = new_group %>
-          <!-- グループ見出し -->
-          <tr>
-            <td colspan="5">
-              <h4 id="section-<%= ["あ行", "か行", "さ行", "た行", "な行", "は行", "ま行", "や行", "ら行", "わ行"].index(current_group) %>" class="mt-4 border-bottom pt-3 pb-1">
-                🔹 <%= current_group %>
-              </h4>
-            </td>
-          </tr>
-        <% end %>
-
-        <!-- 会員情報 -->
         <tr>
           <td><%= customer.id %></td>
           <td><%= link_to admin_customer_path(customer.id) do %>
@@ -90,4 +64,3 @@
     </tbody>
   </table>
 </div>
-
