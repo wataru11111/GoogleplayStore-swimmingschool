@@ -26,11 +26,13 @@ class Public::OffsController < ApplicationController
       redirect_to new_off_path and return
     end
     
-      # 過去の日付や当日の10時以降は登録不可
-      if off_date < Date.today || (off_date == Date.today && Time.now >= Time.parse("10:00"))
-        flash[:alert] = "日にちが過ぎている又は当日の10時を過ぎているため登録できません。\nお問い合わせしたい方は080-5011-9947までご連絡ください。"
-        redirect_to offs_path and return
-      end
+
+    # ✅ 修正後：過去の日付だけ登録不可にする
+    if off_date < Date.today
+      flash[:alert] = "過去の日付には登録できません。お問い合わせしたい方は080-5011-9947までご連絡ください。"
+      redirect_to offs_path and return
+    end
+
     
       # 新しい Off オブジェクトを作成
       @off = Off.new(off_params)
