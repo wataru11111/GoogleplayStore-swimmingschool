@@ -46,7 +46,13 @@
       <% @dates.each do |date| %>
         <tr>
           <td><%= date.transfer_date %></td>
-          <td><%= date.child.last_name %> <%= date.child.first_name %></td>
+          <td>
+            <% if date.child.present? %>
+              <%= date.child.last_name %> <%= date.child.first_name %>
+            <% else %>
+              不明
+            <% end %>
+          </td>
           <td><%= date.off&.off_month || 'データなし' %></td>
           <td><%= date.transfer_time %></td>
           <td><%= date.level %></td>
