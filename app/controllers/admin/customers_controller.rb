@@ -40,24 +40,20 @@ class Admin::CustomersController < ApplicationController
     end
   end
 
+  # ✅ パスワードリセット（メール送信を削除し、画面に表示）
   def password_reset
     @customer = Customer.find(params[:id])
     new_password = SecureRandom.hex(8)
 
     if @customer.update(password: new_password)
-      begin
-        CustomerMailer.password_reset(@customer, new_password).deliver_now
-        flash[:notice] = "新しいパスワードがメールで送信されました。"
-      rescue => e
-        Rails.logger.error("メール送信エラー: #{e.message}")
-        flash[:alert] = "パスワードは更新されましたが、メール送信に失敗しました。"
-      end
+      flash[:notice] = "新しいパスワードは「#{new_password}」です。お客様に直接お伝えください。"
     else
       flash[:alert] = "パスワードのリセットに失敗しました。"
     end
 
     redirect_to admin_customer_path(@customer)
   end
+
 
   def history
     @customer = Customer.find(params[:id])
