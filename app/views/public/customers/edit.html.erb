@@ -1,5 +1,5 @@
 <div class="container">
-  <h2>会員情報編集</h2>
+  <h2>ユーザー情報編集</h2>
 
 <%= form_with model: @customer,url:customers_information_path, method: :patch do |f| %>
     <div class="field">
@@ -41,6 +41,20 @@
     <div class="field">
       <%= f.label :メールアドレス %><br />
       <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+
+    <!-- パスワード変更項目の追加 -->
+    <hr>
+    <h4>パスワードの再設定（必要な場合のみ）</h4>
+    <div class="field">
+      <%= f.label :password, "新しいパスワード" %><br />
+      <%= f.password_field :password, autocomplete: "new-password" %>
+    </div>
+
+    <div class="field">
+      <%= f.label :password_confirmation, "パスワード（確認用）" %><br />
+      <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
+    </div>
+
 
       <div class=row>
        <div class="actions">

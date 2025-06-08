@@ -96,6 +96,12 @@
             <% end %>
           </li>
           <li class="nav-item">
+            <%= link_to customers_information_edit_path, class: 'nav-link text-light' do %>
+              <i class="fas fa-user-cog"></i> ユーザー情報編集
+            <% end %>
+           </li>
+
+          <li class="nav-item">
             <%= button_to destroy_customer_session_path,
               method: :delete,
               form: { class: 'd-inline' },
@@ -155,6 +161,7 @@
 
   <body class="<%= current_page?(root_path) ? 'top-page-background' : 'custom-background' %> <%= controller_name %>-<%= action_name %>">
     <main>
+    <% if admin_signed_in? %>
     <% if flash[:notice] %>
         <div class="alert alert-success" role="alert">
           <%= flash[:notice] %>
@@ -166,6 +173,7 @@
           <%= flash[:alert] %>
         </div>
       <% end %>
+     <% end %>
 
       <%= yield %>
     </main>
