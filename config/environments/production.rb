@@ -106,6 +106,26 @@ Rails.application.configure do
   config.hosts << "googleplaystore-swimmingschool-production.up.railway.app"
   config.hosts.clear
 
+
+  # ✅ ここからメール設定
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+  address:              'smtp.office365.com',
+  port:                 587,
+  domain:               'outlook.com',
+  user_name:            ENV['OUTLOOK_USERNAME'],
+  password:             ENV['OUTLOOK_PASSWORD'],
+  authentication:       'login',
+  enable_starttls_auto: true
+  }
+
+  # ✅ メール本文にURLリンクを含める場合に必要（本番用のURLに書き換える）
+  config.action_mailer.default_url_options = {
+    host: 'googleplaystore-swimmingschool-production.up.railway.app',
+    protocol: 'https'
+  }
+
+
   # Inserts middleware to perform automatic connection switching.
   # The `database_selector` hash is used to pass options to the DatabaseSelector
   # middleware. The `delay` is used to determine how long to wait after a write

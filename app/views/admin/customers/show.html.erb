@@ -43,8 +43,11 @@
       <% end %>
     </div>
     <div class="col-md-3">
-      <strong>パスワードリセット:</strong>
-      <%= link_to "パスワードをリセットする", password_reset_admin_customer_path(@customer), method: :post, class: "btn btn-danger btn-sm", data: { confirm: "本当にパスワードをリセットしますか？" } %>
+      <strong>パスワードリセット:</strong><br>
+      <%= button_to "パスワードをリセットする", password_reset_admin_customer_path(@customer),
+          method: :post,
+          class: "btn btn-danger btn-sm",
+          data: { confirm: "本当にパスワードをリセットしますか？" } %>
     </div>
   </div>
 
