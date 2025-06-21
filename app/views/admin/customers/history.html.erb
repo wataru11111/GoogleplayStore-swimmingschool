@@ -12,6 +12,7 @@
       <th>クラス</th>
       <th>契約時間</th>
       <th>契約曜日</th>
+      <th>理由</th>
     </tr>
   </thead>
 
@@ -22,6 +23,7 @@
          <td><%= off.child.level %></td>
          <td><%= [off.child.contact_time1, off.child.contact_time2].compact.join(" / ") %></td>
          <td><%= [off.child.contact_dey1, off.child.contact_dey2].compact.join(" / ") %></td>
+         <td><%= off.reason.presence || "未記入" %></td>
        </tr>
      <% end %>
    </tbody>

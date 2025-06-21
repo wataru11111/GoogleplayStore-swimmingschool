@@ -1,0 +1,22 @@
+<h2>振替日登録</h2>
+<%= form_with model: @transfer, url: admin_transfers_path, local: true do |f| %>
+  <%= f.hidden_field :child_id, value: @child.id %>
+
+  <div class="form-group">
+    <%= f.label :transfer_month, "振替日" %>
+    <%= f.date_field :transfer_month, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :transfer_time, "時間" %>
+    <%= f.time_field :transfer_time, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :level, "レベル" %>
+    <%= f.text_field :level, class: "form-control" %>
+  </div>
+
+  <%= f.submit "登録", class: "btn btn-success mt-2" %>
+<% end %>
+

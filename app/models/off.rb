@@ -2,11 +2,14 @@ class Off < ApplicationRecord
   belongs_to :child
   has_many :transfers, foreign_key: :off_id
 
-  # バリデーション
-  validates :off_day, uniqueness: { scope: [:child_id, :off_month], message: "この日は既に登録されています。一度ページを再読み込みしてから別の日にちを指定してください。" }
+  # ✅ contextが:publicのときだけバリデーションを適用
+  validates :off_day, uniqueness: {
+    scope: [:child_id, :off_month],
+    message: "この日は既に登録されています。一度ページを再読み込みしてから別の日にちを指定してください。"
+  }, on: :public
 
-  # コールバック
-  before_create :check_expiration_on_create
+  # ✅ コールバックも public だけ
+  before_create :check_expiration_on_create, if: :validate_public_context?
 
   # 振替済みかどうかを判定するメソッド
   def transfer_registered?
@@ -47,5 +50,10 @@ class Off < ApplicationRecord
 
   def check_expiration_on_create
     self.flag = 2 if expired? && self.flag == 0
+  end
+
+ # ✅ contextが :public のときのみ true
+  def validate_public_context?
+    validation_context == :public || validation_context.nil?
   end
 end

@@ -77,8 +77,16 @@
       <div class="col-md-3">
         <strong>お休み:</strong> <%= Off.where(child_id: child.id, flag: 0).count %>日
       </div>
+        <!-- 追加登録 -->
+      <div class="col-md-3">
+        <%= link_to "お休み登録", new_admin_off_path(child_id: child.id), class: "btn btn-outline-danger btn-sm" %>
+      </div>
+      <div class="col-md-3">
+        <%#= link_to "振替登録", new_admin_transfer_path(child_id: child.id), class: "btn btn-outline-success btn-sm" %>
+      </div>
     </div>
   <% end %>
+
 
   <!-- リンク -->
   <div class="actions admin mt-4 gap-3">

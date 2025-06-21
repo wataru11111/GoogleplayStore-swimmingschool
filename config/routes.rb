@@ -20,7 +20,8 @@ Rails.application.routes.draw do
         patch :change_status
       end
     end
-    resources :offs, only: [:index] # お休み一覧ページのルート
+    resources :offs, only: [:index, :new, :create] # お休み一覧ページのルート
+    resources :transfers, only: [:new, :create]
     resources :child, only: [:edit, :update] # 管理者用の子供編集ページ
     resources :settings, only: [:index, :update]# スケジュール管理
   end

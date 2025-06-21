@@ -65,7 +65,7 @@ class Public::DateController < ApplicationController
 
 
   # 振替登録の保存処理
-  if @date.save
+  if @date.save(context: :public)  # ← ✅ 会員にはバリデーション適用
     off.update(flag: 1)
     flash[:notice] = "振替登録が完了しました。"
     redirect_to dates_completion_path(id: @date.id)
