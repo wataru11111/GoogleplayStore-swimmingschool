@@ -21,11 +21,11 @@ class Admin::HomesController < ApplicationController
         "#{count} / 3"
       end
     else
-      @dates = Transfer.all
+      @dates = Transfer.none
       @time_level_slots = {}
     end
 
-    @offs = Off.all
+    @offs = Off.none
   end
 end
 

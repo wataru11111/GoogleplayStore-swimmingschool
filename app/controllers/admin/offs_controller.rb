@@ -4,7 +4,7 @@ class Admin::OffsController < ApplicationController
       search_date = Date.parse(params[:search_date]) rescue nil
       @offs = search_date ? Off.where("DATE(off_month) = ?", search_date) : Off.none
     else
-      @offs = Off.all
+      @offs = Off.none
     end
   end
 
