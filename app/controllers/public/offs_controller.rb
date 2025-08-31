@@ -19,6 +19,14 @@ class Public::OffsController < ApplicationController
       redirect_to new_off_path and return
      end
 
+     # ★ 追加：不可能日チェック（disabled_off_days）
+    disabled = Setting.find_by(key: 'disabled_off_days')&.value.to_s
+    disabled_list = disabled.split(/[,、，\s]+/).map(&:strip).reject(&:blank?)
+    if disabled_list.include?(off_date.strftime('%Y-%m-%d'))
+      flash[:alert] = "この日はスイミングがお休みのため、お休み登録できません。"
+      redirect_to offs_path and return
+    end
+
 
 
     rescue ArgumentError
@@ -71,7 +79,7 @@ class Public::OffsController < ApplicationController
     end
 
     def index
-      @offs = Off.all
+      @off = Off.new
     end
 
     def show

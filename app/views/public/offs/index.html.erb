@@ -1,20 +1,19 @@
-<div class="calendar-photo-container">
-  <h2>6月7月スケジュール表</h2>
-  <%= image_tag '2025_june_july_schedule_redo_1.png', class: 'calendar-photo', alt: '6月7月スケジュール' %>
-</div>
+<% disabled_off_dates = Setting.find_by(key: 'disabled_off_days')&.value.to_s %>
+<% max_off_date       = Setting.find_by(key: 'available_off_day')&.value %>
 
 <div class="calendar-photo-container">
   <h2>8月スケジュール表</h2>
   <%= image_tag 'august_schedule.png', class: 'calendar-photo', alt: '8月スケジュール' %>
 </div>
 
+<div class="calendar-photo-container">
+  <h2>9月10月スケジュール表</h2>
+  <%= image_tag 'schedule_september_october.png', class: 'calendar-photo', alt: '9月10月スケジュール' %>
+</div>
 
 <div class="container">
-  <!-- フラッシュメッセージの表示 -->
   <% if flash[:alert].present? %>
-    <div class="alert alert-danger">
-      <%= flash[:alert] %>
-    </div>
+    <div class="alert alert-danger"><%= flash[:alert] %></div>
   <% end %>
 
   <% if @off&.errors&.any? %>
@@ -28,24 +27,29 @@
     </div>
   <% end %>
 
-  <%= form_with model: @offs, url: offs_path, method: :post do |f| %>
-
-    <!-- お子さんの姓（last_name）の入力フィールド -->
+  <%= form_with model: @off, url: offs_path, method: :post do |f| %>
     <div class="field">
       <%= f.label :姓 %><br />
       <%= f.text_field :child_last_name %>
     </div>
 
-    <!-- お子さんの名（first_name）の入力フィールド -->
     <div class="field">
       <%= f.label :名 %><br />
       <%= f.text_field :child_first_name %>
     </div>
-    
-    <!-- 日付選択フィールド（カレンダー形式＋明日以降） -->
+
     <div class="field">
       <%= f.label :お休み日付 %><br />
-      <%= f.date_field :off_month, id: "off_month", min: Date.today, max: Setting.find_by(key: 'available_off_day')&.value %>
+      <!-- ← Flatpickr 用に text_field に変更 -->
+      <%= f.text_field :off_month,
+            id: "off_month",
+            data: {
+              disabled_dates: disabled_off_dates,
+              mindate: Date.current.to_s,
+              maxdate: max_off_date
+            },
+            autocomplete: "off",
+            placeholder: "YYYY-MM-DD" %>
     </div>
 
     <div class="row">
@@ -53,6 +57,5 @@
         <%= f.submit "保存" %>
       </div>
     </div>
-
   <% end %>
 </div>

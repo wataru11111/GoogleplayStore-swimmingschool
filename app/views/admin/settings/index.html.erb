@@ -1,3 +1,4 @@
+<!-- app/views/admin/settings/index.html.erb -->
 <h2>登録可能年月日設定</h2>
 
 <%= form_with url: admin_setting_path('1'), method: :put do %>
@@ -5,10 +6,28 @@
     <label>お休み登録可能最終日 (例: 2025-06-27):</label>
     <%= text_field_tag :available_off_day, @available_off_day %>
   </div>
+
   <div>
     <label>振替登録可能最終日 (例: 2025-06-27):</label>
     <%= text_field_tag :available_transfer_day, @available_transfer_day %>
   </div>
+
+  <hr>
+
+  <div>
+    <label>振替登録不可能日（複数可・区切りはカンマ/空白/改行OK、YYYY-MM-DD）</label><br>
+    <%= text_area_tag :disabled_transfer_days, @disabled_transfer_days, rows: 3, placeholder: "2025-09-07, 2025-09-14\n2025-09-21" %>
+    <p class="text-muted">保存時に YYYY-MM-DD のCSVに正規化されます。</p>
+  </div>
+
+  <%# （必要なら）お休み側の不可能日も同様に用意 %>
+  <%# 
+  <div>
+    <label>お休み登録不可能日（複数可）</label><br>
+    <%= text_area_tag :disabled_off_days, @disabled_off_days, rows: 3 %>
+  </div>
+  %>
+
   <%= submit_tag "設定を保存" %>
 <% end %>
 

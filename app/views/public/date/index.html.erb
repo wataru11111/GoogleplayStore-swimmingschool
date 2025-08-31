@@ -1,15 +1,18 @@
-<div class="calendar-photo-container">
-  <h2>6月7月スケジュール表</h2>
-  <%= image_tag '2025_june_july_schedule_redo_1.png', class: 'calendar-photo', alt: '6月7月スケジュール' %>
-</div>
+<% disabled_transfer_dates = Setting.find_by(key: 'disabled_transfer_days')&.value.to_s %>
+<% max_transfer_date      = Setting.find_by(key: 'available_transfer_day')&.value %>
 
 <div class="calendar-photo-container">
   <h2>8月スケジュール表</h2>
   <%= image_tag 'august_schedule.png', class: 'calendar-photo', alt: '8月スケジュール' %>
 </div>
-  
+
+<div class="calendar-photo-container">
+  <h2>9月10月スケジュール表</h2>
+  <%= image_tag 'schedule_september_october.png', class: 'calendar-photo', alt: '9月10月スケジュール' %>
+</div>
+
 <div class="container">
- <h2>振替曜日と時間</h2>
+  <h2>振替曜日と時間</h2>
 
   <p class="fc-day-sun">日曜日</p>
   <p>12:00〜13:00     2歳カニ〜赤星4</p>
@@ -23,18 +26,14 @@
   <p>17:00〜18:00     黄星2〜ピンク星</p>
   <p>18:00〜19:00     小学生青星1～ピンク星</p>
 
-  <P class="fc-day-wed">水曜日</P>
-  <P>19:30〜20:30    小学生青星1～ピンク星</P>
+  <p class="fc-day-wed">水曜日</p>
+  <p>19:30〜20:30    小学生青星1～ピンク星</p>
 </div>
 
-<!-- フラッシュメッセージの表示 -->
 <% if flash[:alert] %>
-  <div class="alert alert-danger">
-    <%= flash[:alert] %>
-  </div>
+  <div class="alert alert-danger"><%= flash[:alert] %></div>
 <% end %>
 
-<!-- エラーメッセージを表示 -->
 <% if @date&.errors&.any? %>
   <div class="alert alert-danger">
     <h4>入力エラーがあります:</h4>
@@ -62,30 +61,39 @@
   <div class="field">
     <%= f.label :off_id, "お休み日を選択", for: "off_id" %><br />
     <%= f.select :off_id,
-        @offs.map { |child_id, off| ["#{off.off_month.strftime('%Y-%m-%d')}（#{Child.find(child_id).last_name} #{Child.find(child_id).first_name}）", off.id] },
-        { include_blank: "選択してください" },
-        { id: "off_id" } %>
+      @offs.map { |child_id, off| ["#{off.off_month.strftime('%Y-%m-%d')}（#{Child.find(child_id).last_name} #{Child.find(child_id).first_name}）", off.id] },
+      { include_blank: "選択してください" },
+      { id: "off_id" } %>
   </div>
 
   <div class="field">
     <%= f.label :transfer_date, "振替日", for: "transfer_date" %><br />
-    <%= f.date_field :transfer_date, id: "transfer_date", min: Date.tomorrow, max: Setting.find_by(key: 'available_transfer_day')&.value %>
+    <!-- ← Flatpickr を使うので text_field に変更 -->
+    <%= f.text_field :transfer_date,
+          id: "transfer_date",
+          data: {
+            disabled_dates: disabled_transfer_dates,
+            mindate: Date.tomorrow.to_s,
+            maxdate: max_transfer_date
+          },
+          autocomplete: "off",
+          placeholder: "YYYY-MM-DD" %>
   </div>
 
   <div class="field">
     <%= f.label :level, "クラス", for: "level" %><br />
     <%= f.select :level, [
-      ["カニ", "カニ"], ["ラッコ", "ラッコ"], ["イルカ", "イルカ"],
-      ["黄星1", "黄星1"], ["黄星2", "黄星2"], ["黄星3", "黄星3"], ["黄星4", "黄星4"],
-      ["青星1", "青星1"], ["青星2", "青星2"], ["青星3", "青星3"], ["青星4", "青星4"],
-      ["赤星1", "赤星1"], ["赤星2", "赤星2"], ["赤星3", "赤星3"], ["赤星4", "赤星4"],
-      ["ピンク星1", "ピンク星1"], ["ピンク星2", "ピンク星2"], ["ピンク星3", "ピンク星3"], ["ピンク星4", "ピンク星4"],["AS", "AS"]
+      ["カニ","カニ"],["ラッコ","ラッコ"],["イルカ","イルカ"],
+      ["黄星1","黄星1"],["黄星2","黄星2"],["黄星3","黄星3"],["黄星4","黄星4"],
+      ["青星1","青星1"],["青星2","青星2"],["青星3","青星3"],["青星4","青星4"],
+      ["赤星1","赤星1"],["赤星2","赤星2"],["赤星3","赤星3"],["赤星4","赤星4"],
+      ["ピンク星1","ピンク星1"],["ピンク星2","ピンク星2"],["ピンク星3","ピンク星3"],["ピンク星4","ピンク星4"],["AS","AS"]
     ], { include_blank: "クラス選択" }, { id: "level" } %>
   </div>
 
   <div class="field">
     <%= f.label :contact_dey, "振替曜日", for: "contact_dey" %><br />
-    <%= f.select :contact_dey, [["土曜日", "土曜日"], ["日曜日", "日曜日"], ["水曜日", "水曜日"]], { include_blank: "曜日選択" }, { id: "contact_dey" } %>
+    <%= f.select :contact_dey, [["土曜日","土曜日"],["日曜日","日曜日"],["水曜日","水曜日"]], { include_blank: "曜日選択" }, { id: "contact_dey" } %>
   </div>
 
   <div class="field">

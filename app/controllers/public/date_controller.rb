@@ -36,6 +36,14 @@ class Public::DateController < ApplicationController
      redirect_to date_index_path and return
    end
 
+    # === ここから 追加：振替登録不可能日のサーバチェック ===
+    disabled = Setting.find_by(key: 'disabled_transfer_days')&.value.to_s
+    disabled_list = disabled.split(/[,、，\s]+/).map(&:strip).reject(&:blank?)
+    if disabled_list.include?(@date.transfer_date.strftime('%Y-%m-%d'))
+      flash[:alert] = "この日は振替できません。別の日をお選びください。"
+      redirect_to date_index_path and return
+    end
+
   # ✅ 振替日が許可された月か確認
     limit_day = Setting.find_by(key: 'available_transfer_day')&.value
    if limit_day.present? && @date.transfer_date > Date.parse(limit_day)
