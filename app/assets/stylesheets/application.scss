@@ -50,9 +50,14 @@ html, body {
   overflow: auto;
 }
 
+// 全フォームに高さを強制していたため、ページによって“青い帯/無駄な空間”が出てしまう問題を解消する
 form {
+  margin-bottom: 1.5rem; // ベースの下余白のみ
+}
+
+// もし一部のページで「フォーム領域を画面高に合わせたい」場合は、このユーティリティを明示的に付与する
+.form-stretch {
   min-height: calc(100vh - 50px);
-  margin-bottom: 2rem;
 }
 
 // --- 📅 カレンダー表示用（旧 calendar.scss の内容） ---

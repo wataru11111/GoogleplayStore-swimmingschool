@@ -1,0 +1,19 @@
+current directory: C:/Ruby/my_project/GoogleplayStore-swimmingschool/vendor/bundle/ruby/3.3.0/gems/racc-1.8.1/ext/racc/cparse
+C:/Ruby330-x64/bin/ruby.exe extconf.rb
+creating Makefile
+
+current directory: C:/Ruby/my_project/GoogleplayStore-swimmingschool/vendor/bundle/ruby/3.3.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20250925-20344-lwtzhk sitelibdir\=./.gem.20250925-20344-lwtzhk clean
+
+current directory: C:/Ruby/my_project/GoogleplayStore-swimmingschool/vendor/bundle/ruby/3.3.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20250925-20344-lwtzhk sitelibdir\=./.gem.20250925-20344-lwtzhk
+generating cparse-x64-mingw-ucrt.def
+compiling cparse.c
+linking shared-object racc/cparse.so
+
+current directory: C:/Ruby/my_project/GoogleplayStore-swimmingschool/vendor/bundle/ruby/3.3.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20250925-20344-lwtzhk sitelibdir\=./.gem.20250925-20344-lwtzhk install
+/usr/bin/install -c -m 0755 cparse.so ./.gem.20250925-20344-lwtzhk/racc
+
+current directory: C:/Ruby/my_project/GoogleplayStore-swimmingschool/vendor/bundle/ruby/3.3.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20250925-20344-lwtzhk sitelibdir\=./.gem.20250925-20344-lwtzhk clean

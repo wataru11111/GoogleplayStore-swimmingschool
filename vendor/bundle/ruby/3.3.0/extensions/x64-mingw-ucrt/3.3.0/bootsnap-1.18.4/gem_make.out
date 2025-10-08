@@ -1,0 +1,22 @@
+current directory: C:/Ruby/my_project/GoogleplayStore-swimmingschool/vendor/bundle/ruby/3.3.0/gems/bootsnap-1.18.4/ext/bootsnap
+C:/Ruby330-x64/bin/ruby.exe extconf.rb
+checking for fdatasync() in unistd.h... no
+checking for whether -O3 is accepted as CFLAGS... yes
+checking for whether -std=c99 is accepted as CFLAGS... yes
+creating Makefile
+
+current directory: C:/Ruby/my_project/GoogleplayStore-swimmingschool/vendor/bundle/ruby/3.3.0/gems/bootsnap-1.18.4/ext/bootsnap
+make DESTDIR\= sitearchdir\=./.gem.20250925-20344-hbd9ty sitelibdir\=./.gem.20250925-20344-hbd9ty clean
+
+current directory: C:/Ruby/my_project/GoogleplayStore-swimmingschool/vendor/bundle/ruby/3.3.0/gems/bootsnap-1.18.4/ext/bootsnap
+make DESTDIR\= sitearchdir\=./.gem.20250925-20344-hbd9ty sitelibdir\=./.gem.20250925-20344-hbd9ty
+generating bootsnap-x64-mingw-ucrt.def
+compiling bootsnap.c
+linking shared-object bootsnap/bootsnap.so
+
+current directory: C:/Ruby/my_project/GoogleplayStore-swimmingschool/vendor/bundle/ruby/3.3.0/gems/bootsnap-1.18.4/ext/bootsnap
+make DESTDIR\= sitearchdir\=./.gem.20250925-20344-hbd9ty sitelibdir\=./.gem.20250925-20344-hbd9ty install
+/usr/bin/install -c -m 0755 bootsnap.so ./.gem.20250925-20344-hbd9ty/bootsnap
+
+current directory: C:/Ruby/my_project/GoogleplayStore-swimmingschool/vendor/bundle/ruby/3.3.0/gems/bootsnap-1.18.4/ext/bootsnap
+make DESTDIR\= sitearchdir\=./.gem.20250925-20344-hbd9ty sitelibdir\=./.gem.20250925-20344-hbd9ty clean

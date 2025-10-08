@@ -13,6 +13,13 @@ Rails.application.routes.draw do
   namespace :admin do
     get '/' => "homes#top"
     resources :calendar, only: [:new, :index, :edit, :create, :update]
+    # 曜日検索用
+      resources :day_searches, only: [:index] do
+        collection do
+          post :broadcast_sms
+          post :broadcast_push
+        end
+      end
     resources :customers, only: [:show, :index, :edit, :update] do
       member do
         post :password_reset # パスワードリセットルートをPOSTに設定

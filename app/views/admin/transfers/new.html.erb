@@ -3,18 +3,18 @@
   <%= f.hidden_field :child_id, value: @child.id %>
 
   <div class="form-group">
-    <%= f.label :transfer_month, "振替日" %>
-    <%= f.date_field :transfer_month, class: "form-control" %>
+    <%= f.label :transfer_date, "振替日" %>
+    <%= f.date_field :transfer_date, class: "form-control" %>
   </div>
 
   <div class="form-group">
     <%= f.label :transfer_time, "時間" %>
-    <%= f.time_field :transfer_time, class: "form-control" %>
+    <%= f.time_field :transfer_time, class: "form-control", placeholder: (@child.contact_time1 || @child.contact_time2) %>
   </div>
 
   <div class="form-group">
     <%= f.label :level, "レベル" %>
-    <%= f.text_field :level, class: "form-control" %>
+    <%= f.text_field :level, class: "form-control", placeholder: @child.level %>
   </div>
 
   <%= f.submit "登録", class: "btn btn-success mt-2" %>

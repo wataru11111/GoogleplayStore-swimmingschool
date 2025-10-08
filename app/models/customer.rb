@@ -14,7 +14,7 @@ class Customer < ApplicationRecord
     {
       "active" => "有効",
       "suspended" => "休会中",
-      "inactive" => "無効"
+      "inactive" => "削除"
     }
   end
 

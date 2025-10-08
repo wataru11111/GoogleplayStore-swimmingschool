@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
+# もし本当に 3.3.0 固定理由があるなら元に戻すか ruby "3.3.0" にしてください。
 ruby "3.3.0"
 
 # --- Rails & DB関連 ---
@@ -8,10 +9,15 @@ gem 'rails', '~> 7.1.3'
 # --- OneSignal通知API用 ---
 gem 'httparty'
 
+# --- SMS 送信用（Twilio） ---
+gem 'twilio-ruby'
+
 group :development, :test do
   gem 'sqlite3', '~> 1.4'
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-  gem "planetscale_rails"
+  # Windows では planetscale_rails の rake タスクが 'pty' を要求して落ちるため自動 require を止める
+  # Linux/CI 等で必要な場合は、明示的に `require 'planetscale_rails'` してください
+  gem "planetscale_rails", require: false
 end
 
 

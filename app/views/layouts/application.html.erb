@@ -44,6 +44,13 @@
     <script>
       window.OneSignalDeferred = window.OneSignalDeferred || [];
       OneSignalDeferred.push(function(OneSignal) {
+        const allowedHost = 'googleplaystore-swimmingschool-production.up.railway.app';
+        const isAllowedOrigin = (location.host === allowedHost) || (location.hostname === 'localhost') || (location.hostname === '127.0.0.1');
+        if (!isAllowedOrigin) {
+          console.warn('OneSignal: disabled on this origin:', location.origin);
+          return;
+        }
+
         OneSignal.init({
           appId: "eaeeaece-0313-4653-aea0-84362282265d",
           notifyButton: {
@@ -64,8 +71,47 @@
             }
           }
         });
+
+        // --- 許可プロンプトを一度だけ表示（v16対応: Notification.permission を利用） ---
+        const PROMPT_KEY = 'onesignal_prompted_v1';
+        const current = (typeof Notification !== 'undefined' && Notification.permission) ? Notification.permission : 'default';
+        if (current !== 'granted') {
+          OneSignal.Notifications.canRequestPermission().then(function(can) {
+            if (can && !localStorage.getItem(PROMPT_KEY)) {
+              OneSignal.Notifications.requestPermission().then(function(){
+                const after = (typeof Notification !== 'undefined' && Notification.permission) ? Notification.permission : 'default';
+                if (after === 'granted' || after === 'denied') {
+                  localStorage.setItem(PROMPT_KEY, '1');
+                }
+              }).catch(function(err){ console.warn('OneSignal permission request failed', err); });
+            }
+          });
+        }
       });
     </script>
+
+    <%# 会員IDとOneSignalをひも付け（サブスク状態の安定化とセグメント配信に有効） %>
+    <% if customer_signed_in? %>
+      <script>
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        OneSignalDeferred.push(function(OneSignal) {
+          const allowedHost = 'googleplaystore-swimmingschool-production.up.railway.app';
+          const isAllowedOrigin = (location.host === allowedHost) || (location.hostname === 'localhost') || (location.hostname === '127.0.0.1');
+          if (!isAllowedOrigin) { console.warn('OneSignal login skipped on this origin'); return; }
+          try { OneSignal.login("<%= current_customer.id %>"); } catch (e) { console.warn(e); }
+        });
+      </script>
+    <% else %>
+      <script>
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        OneSignalDeferred.push(function(OneSignal) {
+          const allowedHost = 'googleplaystore-swimmingschool-production.up.railway.app';
+          const isAllowedOrigin = (location.host === allowedHost) || (location.hostname === 'localhost') || (location.hostname === '127.0.0.1');
+          if (!isAllowedOrigin) { return; }
+          try { OneSignal.logout(); } catch (e) { console.warn(e); }
+        });
+      </script>
+    <% end %>
   </head>
 
   <header>
@@ -130,6 +176,12 @@
             <li class="nav-item">
               <%= link_to admin_settings_path, class: 'nav-link text-light' do %>
                 <i class="fas fa-cog"></i> スケジュール管理
+              <% end %>
+            </li>
+            <!-- 追加: 曜日別 在籍一覧（このページへのショートカット） -->
+            <li class="nav-item">
+              <%= link_to admin_day_searches_path, class: 'nav-link text-light' do %>
+                <i class="fas fa-list"></i> 曜日別 在籍一覧
               <% end %>
             </li>
             <li class="nav-item">
