@@ -1,7 +1,7 @@
 class Child < ApplicationRecord
   belongs_to :customer
-  has_many :transfers, dependent: :destroy
-  has_many :offs, dependent: :destroy
+  has_many :transfer
+  has_many :offs
 
 # ✅ バリデーションをここに追加
  # validate :different_contract_days_if_two

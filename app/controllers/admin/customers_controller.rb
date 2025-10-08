@@ -63,17 +63,12 @@ class Admin::CustomersController < ApplicationController
 
   def change_status
     @customer = Customer.find(params[:id])
-    if params[:status] == "inactive"
-      # 削除扱い: 顧客を物理削除（関連子レコード含む）
-      @customer.destroy
-      redirect_to admin_customers_path, notice: "会員を削除しました。"
+    if @customer.update(status: params[:status])
+      flash[:notice] = "ステータスが更新されました。"
     else
-      if @customer.update(status: params[:status])
-        redirect_to admin_customer_path(@customer), notice: "ステータスが更新されました。"
-      else
-        redirect_to admin_customer_path(@customer), alert: "ステータスの更新に失敗しました。"
-      end
+      flash[:alert] = "ステータスの更新に失敗しました。"
     end
+    redirect_to admin_customer_path(@customer)
   end
 
   private

@@ -1,7 +1,6 @@
 class Transfer < ApplicationRecord
   belongs_to :child
-  # 管理側では off に紐付けなくても登録できるように optional にする
-  belongs_to :off, foreign_key: :off_id, optional: true
+  belongs_to :off, foreign_key: :off_id
 
   # ✅ Public側だけでバリデーションを効かせたい項目
   validates :last_name, presence: { message: "苗字を入力してください。" }, on: :public
