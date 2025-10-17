@@ -1,0 +1,93 @@
+<div class="container">
+  <h1>会員一覧</h1>
+
+  <!-- 検索フォーム -->
+  <%= form_with url: admin_area_customers_path, method: :get, local: true, class: "row g-2 mb-4" do %>
+    <div class="col-auto">
+      <%= text_field_tag :q, params[:q], class: "form-control", placeholder: "ひらがなで名前を検索（例：たなか）" %>
+    </div>
+    <div class="col-auto">
+      <%= submit_tag "検索", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+
+  <!-- 会員テーブル -->
+  <table class="table">
+    <thead>
+      <tr>
+        <th>会員ID</th>
+        <th>氏名</th>
+        <th>メールアドレス</th>
+        <th>電話番号</th>
+        <th>ステータス</th>
+        <th>アクション</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @customers.each do |customer| %>
+        <tr>
+          <td><%= customer.id %></td>
+          <td><%= link_to admin_area_customer_path(customer.id) do %>
+            <%= customer.last_name %> <%= customer.first_name %>
+          <% end %></td>
+          <td><%= customer.email %></td>
+          <td><%= customer.telephone_number %></td>
+          <td>
+            <% case customer.status %>
+            <% when "active" %>
+              <h4 class="text-success">有効</h4>
+            <% when "suspended" %>
+              <h4 class="text-warning">休会中</h4>
+            <% when "inactive" %>
+              <%= link_to "削除", admin_area_customer_path(customer.id),
+                    method: :delete,
+                    class: "btn btn-danger btn-sm",
+                    data: { confirm: "本当に削除しますか？この操作は取り消せません。" } %>
+            <% end %>
+          </td>
+          <td>
+            <% if customer.status == "active" %>
+              <%= link_to "振替登録", new_admin_area_customer_transfer_path(customer.id),
+                    class: "btn btn-info btn-sm" %>
+            <% end %>
+          </td>
+        </tr>
+
+        <!-- お子さんの情報 -->
+        <tr>
+          <td colspan="6">
+            <strong>お子さんの名前:</strong>
+            <% if customer.children.present? %>
+              <ul>
+                <% customer.children.each do |child| %>
+                  <li>
+                    <%= child.last_name %> <%= child.first_name %>
+                    <small class="text-muted">
+                      契約曜日:
+                      <% if child.contact_dey1.present? %>
+                        <%= child.contact_dey1 %>
+                        <% if child.contact_dey2.present? %>
+                          / <%= child.contact_dey2 %>
+                        <% end %>
+                      <% else %>
+                        未設定
+                      <% end %>
+                    </small>
+                    <% if customer.status == "active" %>
+                      <%= link_to "お休み登録", "#", class: "btn btn-outline-warning btn-sm ms-2" %>
+                      <%= link_to "振替登録", new_admin_area_customer_child_transfer_path(customer.id, child.id),
+                            class: "btn btn-outline-info btn-sm ms-1" %>
+                    <% end %>
+                  </li>
+                <% end %>
+              </ul>
+            <% else %>
+              <span>登録されているお子さんはいません。</span>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

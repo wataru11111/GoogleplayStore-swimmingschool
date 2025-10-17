@@ -1,0 +1,15 @@
+current directory: /home/wataru1771/GoogleplayStore-swimmingschool/vendor\\bundle/ruby/3.1.0/gems/cgi-0.5.0/ext/cgi/escape
+/home/wataru1771/.rbenv/versions/3.1.6/bin/ruby -I /home/wataru1771/.rbenv/versions/3.1.6/lib/ruby/3.1.0 extconf.rb
+creating Makefile
+
+current directory: /home/wataru1771/GoogleplayStore-swimmingschool/vendor\\bundle/ruby/3.1.0/gems/cgi-0.5.0/ext/cgi/escape
+make DESTDIR\= sitearchdir\=./.gem.20251016-16635-qcl43g sitelibdir\=./.gem.20251016-16635-qcl43g clean
+
+current directory: /home/wataru1771/GoogleplayStore-swimmingschool/vendor\\bundle/ruby/3.1.0/gems/cgi-0.5.0/ext/cgi/escape
+make DESTDIR\= sitearchdir\=./.gem.20251016-16635-qcl43g sitelibdir\=./.gem.20251016-16635-qcl43g
+compiling escape.c
+linking shared-object cgi/escape.so
+
+current directory: /home/wataru1771/GoogleplayStore-swimmingschool/vendor\\bundle/ruby/3.1.0/gems/cgi-0.5.0/ext/cgi/escape
+make DESTDIR\= sitearchdir\=./.gem.20251016-16635-qcl43g sitelibdir\=./.gem.20251016-16635-qcl43g install
+/usr/bin/install -c -m 0755 escape.so ./.gem.20251016-16635-qcl43g/cgi

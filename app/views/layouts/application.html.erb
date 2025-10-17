@@ -113,23 +113,28 @@
           <% elsif admin_signed_in? %>
             <!-- 管理者メニュー -->
             <li class="nav-item">
-              <%= link_to admin_customers_path, class: 'nav-link text-light' do %>
+              <%= link_to admin_area_customers_path, class: 'nav-link text-light' do %>
                 <i class="fas fa-users"></i> 会員一覧
               <% end %>
             </li>
             <li class="nav-item">
-              <%= link_to admin_path, class: 'nav-link text-light' do %>
+              <%= link_to admin_area_path, class: 'nav-link text-light' do %>
                 <i class="fas fa-sync-alt"></i> 振替一覧
               <% end %>
             </li>
             <li class="nav-item">
-              <%= link_to admin_offs_path, class: 'nav-link text-light' do %>
+              <%= link_to admin_area_offs_path, class: 'nav-link text-light' do %>
                 <i class="fas fa-calendar-times"></i> お休み一覧
               <% end %>
             </li>
             <li class="nav-item">
-              <%= link_to admin_settings_path, class: 'nav-link text-light' do %>
+              <%= link_to admin_area_settings_path, class: 'nav-link text-light' do %>
                 <i class="fas fa-cog"></i> スケジュール管理
+              <% end %>
+            </li>
+            <li class="nav-item">
+              <%= link_to admin_area_day_searches_path, class: 'nav-link text-light' do %>
+                <i class="fas fa-search"></i> 曜日別 在籍一覧
               <% end %>
             </li>
             <li class="nav-item">

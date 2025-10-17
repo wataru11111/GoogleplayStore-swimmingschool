@@ -1,5 +1,5 @@
 # ベースイメージ（必要に応じて調整）
-FROM ruby:3.3.0
+FROM ruby:3.1.6
 
 # 必要なパッケージをインストール
 RUN apt-get update -qq && apt-get install -y nodejs npm build-essential libpq-dev default-mysql-client

@@ -1,0 +1,15 @@
+current directory: /home/wataru1771/GoogleplayStore-swimmingschool/vendor\\bundle/ruby/3.1.0/gems/bindex-0.8.1/ext/skiptrace
+/home/wataru1771/.rbenv/versions/3.1.6/bin/ruby -I /home/wataru1771/.rbenv/versions/3.1.6/lib/ruby/3.1.0 extconf.rb
+creating Makefile
+
+current directory: /home/wataru1771/GoogleplayStore-swimmingschool/vendor\\bundle/ruby/3.1.0/gems/bindex-0.8.1/ext/skiptrace
+make DESTDIR\= sitearchdir\=./.gem.20251010-2319-4aclf0 sitelibdir\=./.gem.20251010-2319-4aclf0 clean
+
+current directory: /home/wataru1771/GoogleplayStore-swimmingschool/vendor\\bundle/ruby/3.1.0/gems/bindex-0.8.1/ext/skiptrace
+make DESTDIR\= sitearchdir\=./.gem.20251010-2319-4aclf0 sitelibdir\=./.gem.20251010-2319-4aclf0
+compiling cruby.c
+linking shared-object skiptrace/internal/cruby.so
+
+current directory: /home/wataru1771/GoogleplayStore-swimmingschool/vendor\\bundle/ruby/3.1.0/gems/bindex-0.8.1/ext/skiptrace
+make DESTDIR\= sitearchdir\=./.gem.20251010-2319-4aclf0 sitelibdir\=./.gem.20251010-2319-4aclf0 install
+/usr/bin/install -c -m 0755 cruby.so ./.gem.20251010-2319-4aclf0/skiptrace/internal

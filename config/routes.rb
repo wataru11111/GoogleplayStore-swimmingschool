@@ -1,23 +1,32 @@
 Rails.application.routes.draw do
- # OneSignal通知用APIエンドポイント
+  # OneSignal通知用APIエンドポイント
   post 'api/notify_update', to: 'notifications#update_notice'
 
   devise_for :customers, skip: [:passwords], controllers: {
     registrations: "public/registrations",
     sessions: 'public/sessions'
   }
-  devise_for :admin, skip: [:registrations, :passwords], controllers: {
-    sessions: "admin/sessions"
+  devise_for :admins, skip: [:registrations, :passwords], controllers: {
+    sessions: "admin_area/sessions"
   }
 
-  namespace :admin do
+  namespace :admin_area do
     get '/' => "homes#top"
     resources :calendar, only: [:new, :index, :edit, :create, :update]
-    resources :customers, only: [:show, :index, :edit, :update] do
+    resources :customers do
       member do
         post :password_reset # パスワードリセットルートをPOSTに設定
         get :history         # 履歴ページをGETリクエストで設定
         patch :change_status
+      end
+      resources :transfers, only: [:new, :create]
+      resources :children do
+        resources :transfers, only: [:new, :create]
+      end
+    end
+    resources :day_searches, only: [:index] do
+      collection do
+        post :broadcast_sms
       end
     end
     resources :offs, only: [:index, :new, :create] # お休み一覧ページのルート

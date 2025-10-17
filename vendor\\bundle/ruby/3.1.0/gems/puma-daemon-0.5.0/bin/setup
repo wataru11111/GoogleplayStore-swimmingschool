@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+set -vx
+
+BUNDLE_GEMFILE=Gemfile.puma-v5 bundle install
+BUNDLE_GEMFILE=Gemfile.puma-v6 bundle install
+

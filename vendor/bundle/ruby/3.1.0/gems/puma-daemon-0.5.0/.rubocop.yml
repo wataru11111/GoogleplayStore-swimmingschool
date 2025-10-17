@@ -1,0 +1,41 @@
+require:
+  - rubocop-performance
+  - rubocop-rake
+  - rubocop-rspec
+
+inherit_gem:
+  relaxed-rubocop: .rubocop.yml
+
+AllCops:
+  NewCops: enable
+  SuggestExtensions: true
+  TargetRubyVersion: 2.6
+
+Style/OptionalBooleanParameter:
+  Exclude:
+    - 'lib/puma/daemon/dsl.rb'
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: single_quotes
+
+Style/StringLiteralsInInterpolation:
+  Enabled: true
+  EnforcedStyle: single_quotes
+
+Layout/LineLength:
+  Max: 120
+
+Naming/FileName:
+  Exclude:
+    - 'lib/puma-daemon.rb'
+
+Rake/Desc:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 20
+
+
+# Gemspec/DevelopmentDependencies:
+#   Enabled: false

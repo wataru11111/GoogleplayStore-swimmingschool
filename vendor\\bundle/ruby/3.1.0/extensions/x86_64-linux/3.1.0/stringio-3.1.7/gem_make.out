@@ -1,0 +1,16 @@
+current directory: /home/wataru1771/GoogleplayStore-swimmingschool/vendor\\bundle/ruby/3.1.0/gems/stringio-3.1.7/ext/stringio
+/home/wataru1771/.rbenv/versions/3.1.6/bin/ruby -I /home/wataru1771/.rbenv/versions/3.1.6/lib/ruby/3.1.0 extconf.rb
+checking for rb_io_mode_t in ruby/io.h... no
+creating Makefile
+
+current directory: /home/wataru1771/GoogleplayStore-swimmingschool/vendor\\bundle/ruby/3.1.0/gems/stringio-3.1.7/ext/stringio
+make DESTDIR\= sitearchdir\=./.gem.20251010-2319-xvb77t sitelibdir\=./.gem.20251010-2319-xvb77t clean
+
+current directory: /home/wataru1771/GoogleplayStore-swimmingschool/vendor\\bundle/ruby/3.1.0/gems/stringio-3.1.7/ext/stringio
+make DESTDIR\= sitearchdir\=./.gem.20251010-2319-xvb77t sitelibdir\=./.gem.20251010-2319-xvb77t
+compiling stringio.c
+linking shared-object stringio.so
+
+current directory: /home/wataru1771/GoogleplayStore-swimmingschool/vendor\\bundle/ruby/3.1.0/gems/stringio-3.1.7/ext/stringio
+make DESTDIR\= sitearchdir\=./.gem.20251010-2319-xvb77t sitelibdir\=./.gem.20251010-2319-xvb77t install
+/usr/bin/install -c -m 0755 stringio.so ./.gem.20251010-2319-xvb77t

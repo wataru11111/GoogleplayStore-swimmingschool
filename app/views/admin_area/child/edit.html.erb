@@ -1,0 +1,61 @@
+<div class="container">
+  <h2>お子さん情報編集</h2>
+
+  <%= form_with model: @child, url: admin_area_child_path(@child), method: :patch do |f| %>
+    <div class="form-group">
+      <%= f.label :last_name, "姓" %>
+      <%= f.text_field :last_name, class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :first_name, "名" %>
+      <%= f.text_field :first_name, class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :last_name_kana, "姓カナ" %>
+      <%= f.text_field :last_name_kana, class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :first_name_kana, "名カナ" %>
+      <%= f.text_field :first_name_kana, class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :level, "クラス" %>
+      <%= f.text_field :level, class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+     <%= f.label :contact_dey1, "契約曜日1" %>
+     <%= f.select :contact_dey1,
+          [["水曜日", "水曜日"], ["木曜日", "木曜日"], ["土曜日", "土曜日"], ["日曜日", "日曜日"]],
+          { include_blank: "曜日選択" },
+          { class: "form-control" } %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :contact_dey2, "契約曜日2" %>
+      <%= f.select :contact_dey2,
+          [["水曜日", "水曜日"], ["木曜日", "木曜日"], ["土曜日", "土曜日"], ["日曜日", "日曜日"]],
+          { include_blank: "曜日選択" },
+          { class: "form-control" } %>
+    </div>
+
+
+    <div class="field">
+      <%= f.label :契約時間1 %><br />
+      <%= f.select :contact_time1, [], include_blank: "時間選択", id: "child_contact_time1" %>
+    </div>
+
+    <div class="field" id="contact-time2-field" style="display:none;">
+      <%= f.label :契約時間2 %><br />
+      <%= f.select :contact_time2, [], include_blank: "時間選択", id: "child_contact_time2" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.submit "更新", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,23 @@
+current directory: /home/wataru1771/GoogleplayStore-swimmingschool/vendor\\bundle/ruby/3.1.0/gems/websocket-driver-0.7.7/ext/websocket-driver
+/home/wataru1771/.rbenv/versions/3.1.6/bin/ruby -I /home/wataru1771/.rbenv/versions/3.1.6/lib/ruby/3.1.0 extconf.rb
+creating Makefile
+
+current directory: /home/wataru1771/GoogleplayStore-swimmingschool/vendor\\bundle/ruby/3.1.0/gems/websocket-driver-0.7.7/ext/websocket-driver
+make DESTDIR\= sitearchdir\=./.gem.20251010-2319-4fhvwv sitelibdir\=./.gem.20251010-2319-4fhvwv clean
+
+current directory: /home/wataru1771/GoogleplayStore-swimmingschool/vendor\\bundle/ruby/3.1.0/gems/websocket-driver-0.7.7/ext/websocket-driver
+make DESTDIR\= sitearchdir\=./.gem.20251010-2319-4fhvwv sitelibdir\=./.gem.20251010-2319-4fhvwv
+compiling websocket_mask.c
+websocket_mask.c: In function ‘Init_websocket_mask’:
+websocket_mask.c:26:6: warning: old-style function definition [-Wold-style-definition]
+   26 | void Init_websocket_mask()
+      |      ^~~~~~~~~~~~~~~~~~~
+websocket_mask.c: At top level:
+cc1: note: unrecognized command-line option ‘-Wno-self-assign’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-parentheses-equality’ may have been intended to silence earlier diagnostics
+cc1: note: unrecognized command-line option ‘-Wno-constant-logical-operand’ may have been intended to silence earlier diagnostics
+linking shared-object websocket_mask.so
+
+current directory: /home/wataru1771/GoogleplayStore-swimmingschool/vendor\\bundle/ruby/3.1.0/gems/websocket-driver-0.7.7/ext/websocket-driver
+make DESTDIR\= sitearchdir\=./.gem.20251010-2319-4fhvwv sitelibdir\=./.gem.20251010-2319-4fhvwv install
+/usr/bin/install -c -m 0755 websocket_mask.so ./.gem.20251010-2319-4fhvwv

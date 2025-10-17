@@ -1,0 +1,28 @@
+name: License
+
+on:
+  push: { branches: [master] }
+
+jobs:
+  fossa-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Copy Gemfile
+        run: |
+          cp Gemfile.puma-v6 Gemfile
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2.2
+          bundler-cache: true # runs 'bun
+
+      - name: Bundle Install
+        run: bundle check || bundle install
+
+      - uses: fossas/fossa-action@main # Use a specific version if locking is preferred
+        with:
+          api-key: ${{secrets.FOSSA_API_KEY}}
+          run-tests: false

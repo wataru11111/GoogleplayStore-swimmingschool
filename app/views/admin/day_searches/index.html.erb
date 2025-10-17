@@ -1,0 +1,217 @@
+<div class="container mt-4">
+  <h1>曜日別 在籍一覧</h1>
+  <p class="text-muted">指定した契約曜日に在籍するお子さまと保護者情報を表示します。</p>
+
+  <style>
+    .day-search-table th { writing-mode: horizontal-tb; white-space: nowrap; }
+  </style>
+
+  <%= form_with url: admin_day_searches_path, method: :get, local: true, class: "mb-4" do |f| %>
+    <div class="d-flex align-items-end gap-3 flex-wrap">
+      <div>
+        <label for="day" class="form-label mb-1">曜日</label>
+        <%= select_tag :day, options_for_select(ContractDaySearch::WEEKDAYS, params[:day]), include_blank: "選択してください", class: "form-select" %>
+      </div>
+      <div class="pb-1">
+        <%= f.submit "検索", class: "btn btn-primary" %>
+      </div>
+      <div class="pb-1">
+        <%= link_to "クリア", admin_day_searches_path, class: "btn btn-outline-secondary" %>
+      </div>
+    </div>
+  <% end %>
+
+  <% if params[:day].present? %>
+    <% if @search.errors.any? %>
+      <div class="alert alert-danger">
+        <ul class="mb-0">
+          <% @search.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% else %>
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2 class="h5 mb-0">検索結果 (<%= @children.size %>件)</h2>
+      </div>
+      <div class="mb-2">
+        <label class="small text-muted d-block">SMSテンプレ（下のSMSボタンに反映）</label>
+        <input type="text" id="sms-template" class="form-control form-control-sm" value="スイミングスクールよりお知らせです。">
+      </div>
+
+      <table class="table table-sm table-striped align-middle day-search-table">
+        <thead>
+          <tr>
+            <th>お子さま氏名</th>
+            <th>保護者氏名</th>
+            <th>保護者電話番号</th>
+            <th>契約曜日1</th>
+            <th>契約曜日2</th>
+            <th>契約時間1</th>
+            <th>契約時間2</th>
+            <th>連絡</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @children.each do |child| %>
+            <% parent = child.customer %>
+            <tr>
+              <td><%= child.last_name %> <%= child.first_name %></td>
+              <td><%= parent&.last_name %> <%= parent&.first_name %></td>
+              <td><%= parent&.telephone_number %></td>
+              <td><%= child.contact_dey1 %></td>
+              <td><%= child.contact_dey2 %></td>
+              <td><%= child.contact_time1 %></td>
+              <td><%= child.contact_time2 %></td>
+              <td>
+                <% if parent&.telephone_number.present? %>
+                  <% sms_link = sms_href(parent.telephone_number, '') %>
+                  <% tel_link = "tel:#{e164_jp(parent.telephone_number)}" %>
+                  <a class="btn btn-outline-primary btn-sm sms-link" href="<%= sms_link %>" data-raw-number="<%= parent.telephone_number %>">SMS</a>
+                  <a class="btn btn-outline-secondary btn-sm" href="<%= tel_link %>">TEL</a>
+                <% else %>
+                  <span class="text-muted">番号なし</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  <% else %>
+    <p>上のフォームから曜日を選択して検索してください。</p>
+  <% end %>
+</div>
+
+<script>
+  (function() {
+    const input = document.getElementById('sms-template');
+    function updateLinks() {
+      const text = encodeURIComponent(input.value || '');
+      document.querySelectorAll('a.sms-link').forEach(a => {
+        const href = a.getAttribute('href') || '';
+        const base = href.split('?')[0];
+        a.setAttribute('href', base + '?&body=' + text);
+      });
+    }
+    if (input) {
+      input.addEventListener('input', updateLinks);
+      updateLinks();
+    }
+  })();
+</script>
+<div class="container mt-4">
+  <h1>曜日別 在籍一覧</h1>
+  <p class="text-muted">指定した契約曜日に在籍するお子さまと保護者情報を表示します。</p>
+
+  <style>
+    /* このページのテーブル見出しが縦書き化されないように明示的に横書き指定 */
+    .day-search-table th {
+      writing-mode: horizontal-tb;
+      white-space: nowrap;
+    }
+  </style>
+
+  <%= form_with url: admin_day_searches_path, method: :get, local: true, class: "mb-4" do |f| %>
+  <div class="d-flex align-items-end gap-3 flex-wrap">
+      <div>
+        <label for="day" class="form-label mb-1">曜日</label>
+        <%= select_tag :day,
+            options_for_select(ContractDaySearch::WEEKDAYS, params[:day]),
+            include_blank: "選択してください",
+            class: "form-select" %>
+      </div>
+
+      <div class="pb-1">
+        <%= f.submit "検索", class: "btn btn-primary" %>
+      </div>
+
+      <div class="pb-1">
+        <%= link_to "クリア", admin_day_searches_path, class: "btn btn-outline-secondary" %>
+      </div>
+    </div>
+  <% end %>
+
+  <% if params[:day].present? %>
+    <% if @search.errors.any? %>
+      <div class="alert alert-danger">
+        <ul class="mb-0">
+          <% @search.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% else %>
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2 class="h5 mb-0">検索結果 (<%= @children.size %>件)</h2>
+      </div>
+      <div class="mb-2">
+        <label class="small text-muted d-block">SMSテンプレ（下のSMSボタンに反映）</label>
+        <input type="text" id="sms-template" class="form-control form-control-sm" value="スイミングスクールよりお知らせです。">
+      </div>
+
+      <table class="table table-sm table-striped align-middle day-search-table">
+        <thead>
+          <tr>
+            <th>お子さま氏名</th>
+            <th>保護者氏名</th>
+            <th>保護者電話番号</th>
+            <th>契約曜日1</th>
+            <th>契約曜日2</th>
+            <th>契約時間1</th>
+            <th>契約時間2</th>
+            <th>連絡</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @children.each do |child| %>
+            <% parent = child.customer %>
+            <tr>
+              <td><%= child.last_name %> <%= child.first_name %></td>
+              <td><%= parent&.last_name %> <%= parent&.first_name %></td>
+              <td><%= parent&.telephone_number %></td>
+              <td><%= child.contact_dey1 %></td>
+              <td><%= child.contact_dey2 %></td>
+              <td><%= child.contact_time1 %></td>
+              <td><%= child.contact_time2 %></td>
+              <td>
+                <% if parent&.telephone_number.present? %>
+                  <% sms_link = sms_href(parent.telephone_number, '') %>
+                  <% tel_link = "tel:#{e164_jp(parent.telephone_number)}" %>
+                  <a class="btn btn-outline-primary btn-sm sms-link" href="<%= sms_link %>" data-raw-number="<%= parent.telephone_number %>">SMS</a>
+                  <a class="btn btn-outline-secondary btn-sm" href="<%= tel_link %>">TEL</a>
+                <% else %>
+                  <span class="text-muted">番号なし</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      
+    <% end %>
+  <% else %>
+    <p>上のフォームから曜日を選択して検索してください。</p>
+  <% end %>
+</div>
+
+<script>
+  // 一括でSMSボタンの body をテンプレートで埋め込む
+  (function() {
+    const input = document.getElementById('sms-template');
+    function updateLinks() {
+      const text = encodeURIComponent(input.value || '');
+      document.querySelectorAll('a.sms-link').forEach(a => {
+        // href を sms:+81.. ?&body=... 形式に更新
+        const href = a.getAttribute('href') || '';
+        const base = href.split('?')[0];
+        a.setAttribute('href', base + '?&body=' + text);
+      });
+    }
+    if (input) {
+      input.addEventListener('input', updateLinks);
+      updateLinks();
+    }
+  })();
+</script>

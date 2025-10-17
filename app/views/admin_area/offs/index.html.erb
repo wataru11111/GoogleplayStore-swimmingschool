@@ -1,0 +1,48 @@
+<div class="container">
+  <h1>お休み一覧</h1>
+
+  <!-- 検索フォーム -->
+  <%= form_with url: admin_area_offs_path, method: :get, local: true do %>
+    <div class="form-group">
+      <%= label_tag :search_date, "日付を選択" %>
+      <%= date_field_tag :search_date, params[:search_date], class: "form-control" %>
+    </div>
+    <%= submit_tag "検索", class: "btn btn-primary" %>
+  <% end %>
+
+  <!-- 検索結果を上に移動 -->
+  <% if params[:search_date].present? %>
+    <h3><%= params[:search_date] %> のお休み人数: <%= @offs.size %></h3>
+  <% end %>
+
+  <!-- テーブル -->
+  <table class="table">
+    <thead>
+      <tr>
+        <th>お休み日</th>
+        <th>氏名</th>
+        <th>契約時間</th>
+        <th>契約曜日</th>
+        <th>クラス</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @offs.each do |off| %>
+        <tr>
+          <td><%= off.off_month %></td>
+          <td>
+            <% if off.child.present? %>
+              <%= off.child.last_name %> <%= off.child.first_name %>
+            <% else %>
+              不明
+            <% end %>
+          </td>
+          <td><%= [off.child&.contact_time1, off.child&.contact_time2].compact.join("・") %></td>
+          <td><%= [off.child&.contact_dey1, off.child&.contact_dey2].compact.join("・") %></td>
+          <td><%= off.child&.level || "不明" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+

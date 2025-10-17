@@ -1,0 +1,92 @@
+<div class="container">
+  <h1>振替登録</h1>
+
+  <div class="row">
+    <div class="col-md-8">
+      <%= form_with model: [@customer, @transfer], url: admin_area_customer_transfers_path(@customer), local: true, class: "card" do |form| %>
+        <div class="card-header">
+          <h5>振替情報入力</h5>
+        </div>
+        <div class="card-body">
+          <!-- エラーメッセージ表示 -->
+          <% if @transfer.errors.any? %>
+            <div class="alert alert-danger">
+              <ul class="mb-0">
+                <% @transfer.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <!-- 会員情報表示 -->
+          <div class="mb-3">
+            <strong>会員名:</strong> <%= @customer.last_name %> <%= @customer.first_name %>
+          </div>
+
+          <!-- お子さん選択（複数の子供がいる場合） -->
+          <% if defined?(@children) && @children.present? %>
+            <div class="mb-3">
+              <%= form.label :child_id, "お子さん", class: "form-label" %>
+              <%= form.select :child_id, 
+                    options_from_collection_for_select(@children, :id, :full_name), 
+                    { prompt: "お子さんを選択してください" }, 
+                    { class: "form-select", required: true } %>
+            </div>
+          <% elsif defined?(@child) %>
+            <%= form.hidden_field :child_id, value: @child.id %>
+            <div class="mb-3">
+              <strong>お子さん:</strong> <%= @child.last_name %> <%= @child.first_name %>
+            </div>
+          <% end %>
+
+          <%= form.hidden_field :customer_id %>
+
+          <!-- 元の予定日 -->
+          <div class="mb-3">
+            <%= form.label :original_date, "元の予定日", class: "form-label" %>
+            <%= form.date_field :original_date, class: "form-control", required: true %>
+          </div>
+
+          <!-- 元の時間 -->
+          <div class="mb-3">
+            <%= form.label :original_time, "元の時間", class: "form-label" %>
+            <%= form.time_field :original_time, class: "form-control", required: true %>
+          </div>
+
+          <!-- 振替予定日 -->
+          <div class="mb-3">
+            <%= form.label :transfer_date, "振替予定日", class: "form-label" %>
+            <%= form.date_field :transfer_date, class: "form-control", required: true %>
+          </div>
+
+          <!-- 振替時間 -->
+          <div class="mb-3">
+            <%= form.label :transfer_time, "振替時間", class: "form-label" %>
+            <%= form.time_field :transfer_time, class: "form-control", required: true %>
+          </div>
+
+          <!-- 理由 -->
+          <div class="mb-3">
+            <%= form.label :reason, "理由", class: "form-label" %>
+            <%= form.text_area :reason, class: "form-control", rows: 3, placeholder: "振替の理由を入力してください" %>
+          </div>
+
+          <!-- ステータス -->
+          <div class="mb-3">
+            <%= form.label :status, "ステータス", class: "form-label" %>
+            <%= form.select :status, 
+                  [["申請中", "pending"], ["承認済み", "approved"], ["完了", "completed"]], 
+                  { selected: "approved" }, 
+                  { class: "form-select" } %>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <%= form.submit "振替登録", class: "btn btn-primary" %>
+          <%= link_to "キャンセル", admin_area_customers_path, class: "btn btn-secondary ms-2" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

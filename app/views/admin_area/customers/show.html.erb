@@ -1,0 +1,113 @@
+<div class="container">
+  <h2>会員詳細</h2>
+
+  <!-- 会員情報 -->
+  <div class="customer-info row">
+    <div class="col-md-3">
+      <strong>会員ID:</strong> <%= @customer.id %>
+    </div>
+    <div class="col-md-3">
+      <strong>氏名:</strong> <%= @customer.last_name %> <%= @customer.first_name %>
+    </div>
+    <div class="col-md-3">
+      <strong>カナ:</strong> <%= @customer.last_name_kana %> <%= @customer.first_name_kana %>   
+    </div>
+    <div class="col-md-3">
+      <strong>郵便番号:</strong> <%= @customer.postal_code %>
+    </div>
+    <div class="col-md-3">
+      <strong>住所:</strong> <%= @customer.address %>
+    </div>
+    <div class="col-md-3">
+      <strong>電話番号:</strong> <%= @customer.telephone_number %>
+    </div>
+    <div class="col-md-3">
+      <strong>メールアドレス:</strong> <%= @customer.email %>
+    </div>
+    <div class="col-md-3">
+      <strong>ステータス:</strong>
+      <span class="badge <%= @customer.active? ? 'bg-success' : @customer.suspended? ? 'bg-warning' : 'bg-danger' %>">
+        <%= Customer.statuses_i18n[@customer.status] %>
+      </span>
+    </div>
+    <div class="col-md-12 mt-3">
+      <h3>ステータス変更・削除</h3>
+      <div class="row">
+        <div class="col-md-6">
+          <%= form_with url: change_status_admin_area_customer_path(@customer), method: :patch, local: true do |f| %>
+            <div class="form-group">
+              <%= f.label :status, "ステータスを選択" %>
+              <%= f.select :status, [['有効', 'active'], ['休会中', 'suspended']], {}, class: "form-control" %>
+            </div>
+            <div class="form-group mt-2">
+              <%= f.submit "変更", class: "btn btn-primary" %>
+            </div>
+          <% end %>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <%= label_tag :delete, "会員を完全削除" %>
+            <%= button_to "削除", admin_area_customer_path(@customer),
+                method: :delete,
+                class: "btn btn-danger",
+                data: { confirm: "本当に削除しますか？この操作は取り消せません。会員とお子さんの全ての情報が削除されます。" } %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <strong>パスワードリセット:</strong><br>
+      <%= button_to "パスワードをリセットする", password_reset_admin_area_customer_path(@customer),
+          method: :post,
+          class: "btn btn-warning btn-sm",
+          data: { confirm: "本当にパスワードをリセットしますか？" } %>
+    </div>
+  </div>
+
+  <!-- お子さん情報 -->
+  <% @customer.children.each do |child| %>
+    <h2 class="mt-5">お子さん情報</h2>
+    <%= link_to edit_admin_area_child_path(child), class: "btn btn-warning" do %>
+      お子さん情報を編集
+    <% end %>
+
+    <div class="child-info row">
+      <div class="col-md-3">
+        <strong>氏名:</strong> <%= child.last_name %> <%= child.first_name %>
+      </div>
+      <div class="col-md-3">
+        <strong>カナ:</strong> <%= child.last_name_kana %> <%= child.first_name_kana %>
+      </div>
+      <div class="col-md-3">
+        <strong>クラス:</strong> <%= child.level %>
+      </div>
+      <div class="col-md-3">
+        <strong>契約曜日:</strong> <%= [child.contact_dey1, child.contact_dey2].compact.join("・") %>
+      </div>
+      <div class="col-md-3">
+        <strong>契約時間:</strong> <%= [child.contact_time1, child.contact_time2].compact.join("・") %>
+      </div>
+      <div class="col-md-3">
+        <strong>お休み:</strong> <%= Off.where(child_id: child.id, flag: 0).count %>日
+      </div>
+        <!-- 追加登録 -->
+      <div class="col-md-3">
+        <%= link_to "お休み登録", new_admin_area_off_path(child_id: child.id), class: "btn btn-outline-danger btn-sm" %>
+      </div>
+      <div class="col-md-3">
+        <%= link_to "振替登録", new_admin_area_transfer_path(child_id: child.id), class: "btn btn-outline-success btn-sm" %>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- リンク -->
+  <div class="actions admin mt-4 gap-3">
+    <%= link_to history_admin_area_customer_path(@customer), class: "btn btn-info" do %>        
+      お休みと振替日<br>履歴一覧を見る
+    <% end %>
+
+    <%= link_to edit_admin_area_customer_path, class: "btn btn-primary" do %>
+      会員情報を編集する
+    <% end %>
+  </div>
+</div>
