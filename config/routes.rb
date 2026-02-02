@@ -32,7 +32,12 @@ Rails.application.routes.draw do
     resources :offs, only: [:index, :new, :create] # お休み一覧ページのルート
     resources :transfers, only: [:new, :create]
     resources :child, only: [:edit, :update] # 管理者用の子供編集ページ
-    resources :settings, only: [:index, :update]# スケジュール管理
+    resources :settings, only: [:index, :update] do
+      collection do
+        post :add_slot
+        post :delete_slot
+      end
+    end
   end
 
   scope module: :public do
@@ -67,3 +72,4 @@ Rails.application.routes.draw do
     resources :items, only: [:index, :show]
   end
 end
+

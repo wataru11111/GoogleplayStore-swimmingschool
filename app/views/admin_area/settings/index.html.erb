@@ -82,11 +82,9 @@
       </div>
     </div>
     
-    <!-- 隠しフィールドでJSONデータを送信 -->
-    <%= hidden_field_tag 'disabled_transfer_slots', '', id: 'disabled_transfer_slots' %>
   </div>
 
-  <%= submit_tag "設定を保存", class: "btn btn-primary", style: "margin-top: 20px;" %>
+  <%= submit_tag "基本設定を保存", class: "btn btn-primary", style: "margin-top: 20px;" %>
 <% end %>
 
 <script>
@@ -125,15 +123,31 @@ document.addEventListener('turbo:load', function() {
       return;
     }
     
-    const newSlot = {
-      date: dateInput.value,
-      type: 'all_day'
-    };
-    
-    disabledSlots.push(newSlot);
-    renderList();
-    dateInput.value = '';
-    showSuccessMessage();
+    // Ajaxで即座に保存
+    fetch('/admin_area/settings/add_slot', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+      },
+      body: JSON.stringify({
+        date: dateInput.value,
+        slot_type: 'all_day'
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        disabledSlots = data.slots;
+        renderList();
+        dateInput.value = '';
+        showSuccessMessage();
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('保存に失敗しました');
+    });
   });
   
   // 時間指定で追加
@@ -157,18 +171,34 @@ document.addEventListener('turbo:load', function() {
       return;
     }
     
-    const newSlot = {
-      date: dateInput.value,
-      type: 'time_range',
-      start_time: startTime,
-      end_time: endTime
-    };
-    
-    disabledSlots.push(newSlot);
-    renderList();
-    dateInput.value = '';
-    document.getElementById('time_input_section').style.display = 'none';
-    showSuccessMessage();
+    // Ajaxで即座に保存
+    fetch('/admin_area/settings/add_slot', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+      },
+      body: JSON.stringify({
+        date: dateInput.value,
+        slot_type: 'time_range',
+        start_time: startTime,
+        end_time: endTime
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        disabledSlots = data.slots;
+        renderList();
+        dateInput.value = '';
+        document.getElementById('time_input_section').style.display = 'none';
+        showSuccessMessage();
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('保存に失敗しました');
+    });
   });
   
   function showSuccessMessage() {
@@ -223,8 +253,26 @@ document.addEventListener('turbo:load', function() {
       btn.addEventListener('click', function() {
         const index = parseInt(this.getAttribute('data-index'));
         if (confirm('この設定を削除しますか？')) {
-          disabledSlots.splice(index, 1);
-          renderList();
+          // Ajaxで削除
+          fetch('/admin_area/settings/delete_slot', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({ index: index })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              disabledSlots = data.slots;
+              renderList();
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('削除に失敗しました');
+          });
         }
       });
     });
@@ -233,7 +281,7 @@ document.addEventListener('turbo:load', function() {
   }
   
   function updateHiddenField() {
-    document.getElementById('disabled_transfer_slots').value = JSON.stringify(disabledSlots);
+    // 不要になったが互換性のため残す
   }
 });
 </script>
