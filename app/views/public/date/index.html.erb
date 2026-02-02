@@ -1,5 +1,6 @@
 <% disabled_transfer_dates = Setting.find_by(key: 'disabled_transfer_days')&.value.to_s %>
 <% max_transfer_date      = Setting.find_by(key: 'available_transfer_day')&.value %>
+<% disabled_transfer_slots = Setting.find_by(key: 'disabled_transfer_slots')&.value.to_s %>
 
 <div class="calendar-photo-container">
   <h2>1月スケジュール表</h2>
@@ -78,6 +79,7 @@
           },
           autocomplete: "off",
           placeholder: "YYYY-MM-DD" %>
+    <input type="hidden" id="disabled_slots_data" value="<%= disabled_transfer_slots.presence || '[]' %>">
   </div>
 
   <div class="field">
@@ -112,3 +114,4 @@
     </div>
   </div>
 <% end %>
+

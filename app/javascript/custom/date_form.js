@@ -1,11 +1,26 @@
 // app/javascript/custom/date_form.js
+let disabledTransferSlots = [];
+
 function initializeDateFormScripts() {
+  // ===== 時間帯制限データを先に取得（Flatpickrより前） =====
+  const currentPath = window.location.pathname;
+  if (currentPath === "/date") {
+    const disabledSlotsEl = document.getElementById("disabled_slots_data");
+    if (disabledSlotsEl && disabledSlotsEl.value) {
+      try {
+        disabledTransferSlots = JSON.parse(disabledSlotsEl.value);
+      } catch(e) {
+        console.error("Failed to parse disabled slots:", e);
+        disabledTransferSlots = [];
+      }
+    }
+  }
+
   // ===== Flatpickr をセット（両ページで動かす）=====
   setupFlatpickr("transfer_date");
   setupFlatpickr("off_month");
 
   // ===== /date ページ限定：曜日→時間の連動 =====
-  const currentPath = window.location.pathname;
   if (currentPath !== "/date") return;
 
   const contactDeySelect  = document.getElementById("contact_dey");
@@ -39,6 +54,8 @@ function initializeDateFormScripts() {
   // 曜日選択に応じて時間リスト更新
   function updateTimeOptions() {
     const selectedDay = contactDeySelect.value;
+    const selectedDate = document.getElementById("transfer_date").value;
+    
     contactTimeSelect.innerHTML = "";
     const list = timeOptions[selectedDay] || [];
     if (list.length === 0) {
@@ -48,16 +65,63 @@ function initializeDateFormScripts() {
       contactTimeSelect.appendChild(defaultOption);
       return;
     }
+    
+    // 時間帯制限をチェック
     list.forEach(([value, label]) => {
+      // この時間が選択可能かチェック
+      if (isTimeDisabled(selectedDate, value)) {
+        return; // この時間は選択肢に追加しない
+      }
+      
       const option = document.createElement("option");
       option.value = value;
       option.textContent = label;
       contactTimeSelect.appendChild(option);
     });
+    
+    // 選択肢が何もない場合
+    if (contactTimeSelect.options.length === 0) {
+      const defaultOption = document.createElement("option");
+      defaultOption.value = "";
+      defaultOption.textContent = "この日は振替できません";
+      contactTimeSelect.appendChild(defaultOption);
+    }
+  }
+  
+  // 指定日時が不可能かチェック
+  function isTimeDisabled(date, time) {
+    if (!date || !time || disabledTransferSlots.length === 0) {
+      return false;
+    }
+    
+    for (const slot of disabledTransferSlots) {
+      if (slot.date !== date) continue;
+      
+      // 全休の場合はすべての時間が不可
+      if (slot.type === 'all_day') {
+        return true;
+      }
+      
+      // 時間帯指定の場合
+      if (slot.type === 'time_range' && slot.start_time && slot.end_time) {
+        // 選択時間が不可能時間帯に含まれているかチェック
+        if (time >= slot.start_time && time < slot.end_time) {
+          return true;
+        }
+      }
+    }
+    
+    return false;
   }
 
   updateTimeOptions();
   contactDeySelect.addEventListener("change", updateTimeOptions);
+  
+  // 日付が変更されたときも時間選択肢を更新
+  const transferDateEl = document.getElementById("transfer_date");
+  if (transferDateEl) {
+    transferDateEl.addEventListener("change", updateTimeOptions);
+  }
 }
 
 // Flatpickr 初期化（data-* から min/max/disable を取得）
@@ -73,6 +137,15 @@ function setupFlatpickr(inputId) {
   const minDate = el.dataset.mindate || el.getAttribute("min") || null;
   const maxDate = el.dataset.maxdate || el.getAttribute("max") || null;
 
+  // 全休の日をdisableリストに追加
+  if (inputId === "transfer_date" && disabledTransferSlots.length > 0) {
+    disabledTransferSlots.forEach(slot => {
+      if (slot.type === 'all_day') {
+        disabled.push(slot.date);
+      }
+    });
+  }
+
   if (window.flatpickr.l10ns && window.flatpickr.l10ns.ja) {
     window.flatpickr.localize(window.flatpickr.l10ns.ja);
   }
@@ -87,4 +160,5 @@ function setupFlatpickr(inputId) {
 }
 
 document.addEventListener("turbo:load", initializeDateFormScripts);
+
 

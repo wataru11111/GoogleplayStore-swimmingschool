@@ -5,6 +5,7 @@ class AdminArea::SettingsController < ApplicationController
     @available_off_day       = Setting.find_by(key: 'available_off_day')&.value
     @available_transfer_day  = Setting.find_by(key: 'available_transfer_day')&.value
     @disabled_transfer_days  = Setting.find_by(key: 'disabled_transfer_days')&.value
+    @disabled_transfer_slots = Setting.find_by(key: 'disabled_transfer_slots')&.value
   end
 
   def update
@@ -13,6 +14,16 @@ class AdminArea::SettingsController < ApplicationController
     Setting.find_or_initialize_by(key: 'available_transfer_day')
            .update(value: params[:available_transfer_day])
 
+    # 新しい時間帯ベースの設定を保存
+    if params[:disabled_transfer_slots].present?
+      Setting.find_or_initialize_by(key: 'disabled_transfer_slots')
+             .update(value: params[:disabled_transfer_slots])
+    else
+      Setting.find_or_initialize_by(key: 'disabled_transfer_slots')
+             .update(value: '[]')
+    end
+
+    # 旧形式も念のため保持（後方互換性のため）
     if params[:disabled_transfer_days].present?
       normalized = normalize_dates_str(params[:disabled_transfer_days])
       Setting.find_or_initialize_by(key: 'disabled_transfer_days').update(value: normalized)
@@ -38,3 +49,4 @@ class AdminArea::SettingsController < ApplicationController
        .compact.uniq.sort.join(',')
   end
 end
+

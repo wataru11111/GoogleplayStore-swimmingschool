@@ -36,21 +36,12 @@ class Public::DateController < ApplicationController
      redirect_to date_index_path and return
    end
 
-    # === ここから 追加：振替登録不可能日のサーバチェック ===
-    disabled = Setting.find_by(key: 'disabled_transfer_days')&.value.to_s
-    disabled_list = disabled.split(/[,、，\s]+/).map(&:strip).reject(&:blank?)
-    if disabled_list.include?(@date.transfer_date.strftime('%Y-%m-%d'))
-      flash[:alert] = "この日は振替できません。別の日をお選びください。"
-      redirect_to date_index_path and return
-    end
-
   # ✅ 振替日が許可された月か確認
     limit_day = Setting.find_by(key: 'available_transfer_day')&.value
    if limit_day.present? && @date.transfer_date > Date.parse(limit_day)
      flash[:alert] = "まだスケジュールが未定です。"
      redirect_to date_index_path and return
    end
-
 
   # 前日までしか登録できないチェック
    if @date.transfer_date <= Date.today
@@ -59,6 +50,13 @@ class Public::DateController < ApplicationController
    end
 
   @date.transfer_time = params[:transfer][:transfer_time]
+  
+    # === 新しい時間帯ベースのチェック ===
+    if check_disabled_transfer_slot(@date.transfer_date, @date.transfer_time)
+      flash[:alert] = "この日時は振替できません。別の日時をお選びください。"
+      redirect_to date_index_path and return
+    end
+
   # ✅ 時間帯 × レベルの組み合わせが3人以上かチェック
      count = Transfer.where(
        transfer_date: @date.transfer_date,
@@ -106,6 +104,44 @@ end
 
   private
 
+  def check_disabled_transfer_slot(transfer_date, transfer_time)
+    slots_json = Setting.find_by(key: 'disabled_transfer_slots')&.value
+    return false if slots_json.blank?
+    
+    begin
+      slots = JSON.parse(slots_json)
+    rescue JSON::ParserError
+      return false
+    end
+    
+    date_str = transfer_date.strftime('%Y-%m-%d')
+    
+    slots.each do |slot|
+      next unless slot['date'] == date_str
+      
+      # 全休の場合はその日全体が不可
+      if slot['type'] == 'all_day'
+        return true
+      end
+      
+      # 時間指定の場合は時間範囲をチェック
+      if slot['type'] == 'time_range' && transfer_time.present?
+        slot_start = Time.parse("#{date_str} #{slot['start_time']}")
+        slot_end = Time.parse("#{date_str} #{slot['end_time']}")
+        
+        # transfer_timeが文字列の場合（例: "11:00"）
+        transfer_datetime = Time.parse("#{date_str} #{transfer_time}")
+        
+        # 指定時間が不可能時間帯に含まれているかチェック
+        if transfer_datetime >= slot_start && transfer_datetime < slot_end
+          return true
+        end
+      end
+    end
+    
+    false
+  end
+
   def transfer_params
     params.require(:transfer).permit(
       :last_name, :first_name, :transfer_date, :level, :contact_dey, 
@@ -113,3 +149,4 @@ end
     )
   end
 end
+

@@ -14,20 +14,227 @@
 
   <hr>
 
-  <div>
-    <label>振替登録不可能日（複数可・区切りはカンマ/空白/改行OK、YYYY-MM-DD）</label><br>
-    <%= text_area_tag :disabled_transfer_days, @disabled_transfer_days, rows: 3, placeholder: "2025-09-07, 2025-09-14\n2025-09-21" %>
-    <p class="text-muted">保存時に YYYY-MM-DD のCSVに正規化されます。</p>
+  <h3>振替登録不可能日の設定</h3>
+  
+  <!-- 変更完了メッセージ -->
+  <div id="success_message" style="display: none; padding: 10px; margin-bottom: 15px; background: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 5px;">
+    ✓ 変更完了
+  </div>
+  
+  <div class="disabled-transfer-manager">
+    <div class="add-disabled-section" style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+      <h4>新規追加</h4>
+      <div style="margin-bottom: 10px;">
+        <label>日付を選択:</label><br>
+        <input type="date" id="select_date" style="padding: 5px; font-size: 14px;">
+      </div>
+      
+      <div style="margin-bottom: 10px;">
+        <button type="button" id="add_all_day" class="btn btn-warning" style="margin-right: 10px;">全休として追加</button>
+        <button type="button" id="show_time_input" class="btn btn-info">時間指定で追加</button>
+      </div>
+      
+      <div id="time_input_section" style="display: none; margin-top: 10px; padding: 10px; background: #fff3cd; border: 2px solid #ffc107; border-radius: 5px;">
+        <p style="margin: 0 0 10px 0; font-weight: bold; color: #856404;">⏰ 時間を選択してください</p>
+        <div style="margin-bottom: 10px;">
+          <label style="font-weight: bold;">開始時間:</label><br>
+          <select id="start_time" style="padding: 5px; font-size: 14px; margin-bottom: 10px;">
+            <option value="09:00">09:00</option>
+            <option value="10:00">10:00</option>
+            <option value="11:00" selected>11:00</option>
+            <option value="12:00">12:00</option>
+            <option value="13:00">13:00</option>
+            <option value="14:00">14:00</option>
+            <option value="15:00">15:00</option>
+            <option value="16:00">16:00</option>
+            <option value="17:00">17:00</option>
+            <option value="18:00">18:00</option>
+            <option value="19:00">19:00</option>
+            <option value="20:00">20:00</option>
+          </select>
+        </div>
+        <div style="margin-bottom: 10px;">
+          <label style="font-weight: bold;">終了時間:</label><br>
+          <select id="end_time" style="padding: 5px; font-size: 14px; margin-bottom: 10px;">
+            <option value="09:00">09:00</option>
+            <option value="10:00">10:00</option>
+            <option value="11:00">11:00</option>
+            <option value="12:00">12:00</option>
+            <option value="13:00">13:00</option>
+            <option value="14:00">14:00</option>
+            <option value="15:00">15:00</option>
+            <option value="16:00" selected>16:00</option>
+            <option value="17:00">17:00</option>
+            <option value="18:00">18:00</option>
+            <option value="19:00">19:00</option>
+            <option value="20:00">20:00</option>
+            <option value="21:00">21:00</option>
+          </select>
+        </div>
+        <button type="button" id="add_time_range" class="btn btn-success" style="width: 100%;">この時間帯を追加</button>
+      </div>
+    </div>
+
+    <div class="disabled-list-section">
+      <h4>登録済み不可能日時</h4>
+      <div id="disabled_items_list" style="margin-top: 10px;">
+        <!-- JavaScriptで動的に追加 -->
+      </div>
+    </div>
+    
+    <!-- 隠しフィールドでJSONデータを送信 -->
+    <%= hidden_field_tag 'disabled_transfer_slots', '', id: 'disabled_transfer_slots' %>
   </div>
 
-  <%# （必要なら）お休み側の不可能日も同様に用意 %>
-  <%# 
-  <div>
-    <label>お休み登録不可能日（複数可）</label><br>
-    <%= text_area_tag :disabled_off_days, @disabled_off_days, rows: 3 %>
-  </div>
-  %>
-
-  <%= submit_tag "設定を保存" %>
+  <%= submit_tag "設定を保存", class: "btn btn-primary", style: "margin-top: 20px;" %>
 <% end %>
+
+<script>
+document.addEventListener('turbo:load', function() {
+  let disabledSlots = [];
+  
+  // 既存データを読み込む（@disabled_transfer_slotsは既にJSON文字列）
+  try {
+    const existingData = <%= raw(@disabled_transfer_slots.presence || '[]') %>;
+    console.log('Raw existing data:', existingData);
+    console.log('Type:', typeof existingData);
+    
+    // existingDataは既にJavaScriptの配列/オブジェクトとして展開されている
+    if (Array.isArray(existingData)) {
+      disabledSlots = existingData;
+      console.log('Loaded disabled slots:', disabledSlots);
+    }
+  } catch(e) {
+    console.error('Failed to load existing data:', e);
+    disabledSlots = [];
+  }
+  
+  renderList();
+  
+  // 時間指定セクションの表示/非表示
+  document.getElementById('show_time_input').addEventListener('click', function() {
+    const section = document.getElementById('time_input_section');
+    section.style.display = section.style.display === 'none' ? 'block' : 'none';
+  });
+  
+  // 全休として追加
+  document.getElementById('add_all_day').addEventListener('click', function() {
+    const dateInput = document.getElementById('select_date');
+    if (!dateInput.value) {
+      alert('日付を選択してください');
+      return;
+    }
+    
+    const newSlot = {
+      date: dateInput.value,
+      type: 'all_day'
+    };
+    
+    disabledSlots.push(newSlot);
+    renderList();
+    dateInput.value = '';
+    showSuccessMessage();
+  });
+  
+  // 時間指定で追加
+  document.getElementById('add_time_range').addEventListener('click', function() {
+    const dateInput = document.getElementById('select_date');
+    const startTime = document.getElementById('start_time').value;
+    const endTime = document.getElementById('end_time').value;
+    
+    if (!dateInput.value) {
+      alert('日付を選択してください');
+      return;
+    }
+    
+    if (!startTime || !endTime) {
+      alert('開始時間と終了時間を入力してください');
+      return;
+    }
+    
+    if (startTime >= endTime) {
+      alert('終了時間は開始時間より後にしてください');
+      return;
+    }
+    
+    const newSlot = {
+      date: dateInput.value,
+      type: 'time_range',
+      start_time: startTime,
+      end_time: endTime
+    };
+    
+    disabledSlots.push(newSlot);
+    renderList();
+    dateInput.value = '';
+    document.getElementById('time_input_section').style.display = 'none';
+    showSuccessMessage();
+  });
+  
+  function showSuccessMessage() {
+    const msg = document.getElementById('success_message');
+    msg.style.display = 'block';
+    setTimeout(function() {
+      msg.style.display = 'none';
+    }, 3000); // 3秒後に自動的に消える
+  }
+  
+  function renderList() {
+    const listContainer = document.getElementById('disabled_items_list');
+    
+    if (disabledSlots.length === 0) {
+      listContainer.innerHTML = '<p class="text-muted">登録されている不可能日時はありません</p>';
+      updateHiddenField();
+      return;
+    }
+    
+    // 日付順にソート
+    disabledSlots.sort((a, b) => {
+      if (a.date !== b.date) return a.date.localeCompare(b.date);
+      if (a.type === 'all_day') return -1;
+      if (b.type === 'all_day') return 1;
+      return (a.start_time || '').localeCompare(b.start_time || '');
+    });
+    
+    let html = '<div style="max-height: 400px; overflow-y: auto;">';
+    html += '<table class="table table-striped" style="font-size: 14px;">';
+    html += '<thead><tr><th>日付</th><th>制限内容</th><th>操作</th></tr></thead>';
+    html += '<tbody>';
+    
+    disabledSlots.forEach((slot, index) => {
+      html += '<tr>';
+      html += `<td>${slot.date}</td>`;
+      
+      if (slot.type === 'all_day') {
+        html += '<td><span class="badge bg-danger">全休</span></td>';
+      } else {
+        html += `<td><span class="badge bg-warning text-dark">${slot.start_time} ～ ${slot.end_time}</span></td>`;
+      }
+      
+      html += `<td><button type="button" class="btn btn-sm btn-danger delete-btn" data-index="${index}">削除</button></td>`;
+      html += '</tr>';
+    });
+    
+    html += '</tbody></table></div>';
+    listContainer.innerHTML = html;
+    
+    // 削除ボタンのイベント設定
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const index = parseInt(this.getAttribute('data-index'));
+        if (confirm('この設定を削除しますか？')) {
+          disabledSlots.splice(index, 1);
+          renderList();
+        }
+      });
+    });
+    
+    updateHiddenField();
+  }
+  
+  function updateHiddenField() {
+    document.getElementById('disabled_transfer_slots').value = JSON.stringify(disabledSlots);
+  }
+});
+</script>
 
