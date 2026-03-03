@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       member do
         post :password_reset # パスワードリセットルートをPOSTに設定
         get :history         # 履歴ページをGETリクエストで設定
+        delete :destroy_transfer  # 振替削除ルート
         patch :change_status
       end
       resources :transfers, only: [:new, :create]
@@ -36,6 +37,8 @@ Rails.application.routes.draw do
       collection do
         post :add_slot
         post :delete_slot
+        post :add_slot_off
+        post :delete_slot_off
       end
     end
   end

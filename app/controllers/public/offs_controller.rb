@@ -27,6 +27,12 @@ class Public::OffsController < ApplicationController
       redirect_to offs_path and return
     end
 
+    # ★ 追加：不可能日時チェック（disabled_off_slots）
+    if off_date_disabled_by_slots?(off_date)
+      flash[:alert] = "この日はお休み登録不可能日に設定されているため、登録できません。"
+      redirect_to offs_path and return
+    end
+
 
 
     rescue ArgumentError
@@ -123,6 +129,12 @@ class Public::OffsController < ApplicationController
         flash[:alert] = "過去の日付には変更できません。"
         render :edit_absence and return
       end
+
+      # お休み登録不可能日の設定チェック
+      if off_date_disabled_by_slots?(selected_date)
+        flash[:alert] = "この日はお休み登録不可能日に設定されているため、変更できません。"
+        render :edit_absence and return
+      end
     
       # `off_month`を更新
       if @off.update(off_month: selected_date)
@@ -144,5 +156,19 @@ class Public::OffsController < ApplicationController
 
     def off_params
       params.require(:off).permit(:off_day, :off_month, :child_id, :contact_dey1, :contact_dey2, :level,  :contact_time1, :contact_time2,)
+    end
+
+    def off_date_disabled_by_slots?(date)
+      slots_json = Setting.find_by(key: 'disabled_off_slots')&.value
+      return false if slots_json.blank?
+
+      begin
+        slots = JSON.parse(slots_json)
+      rescue JSON::ParserError
+        return false
+      end
+
+      target_date = date.strftime('%Y-%m-%d')
+      slots.any? { |slot| slot.is_a?(Hash) && slot['date'] == target_date }
     end
   end

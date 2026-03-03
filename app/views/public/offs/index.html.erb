@@ -1,5 +1,6 @@
 <% disabled_off_dates = Setting.find_by(key: 'disabled_off_days')&.value.to_s %>
 <% max_off_date       = Setting.find_by(key: 'available_off_day')&.value %>
+<% disabled_off_slots = Setting.find_by(key: 'disabled_off_slots')&.value.to_s %>
 
 <div class="calendar-photo-container">
   <h2>1月スケジュール表</h2>
@@ -50,6 +51,7 @@
             },
             autocomplete: "off",
             placeholder: "YYYY-MM-DD" %>
+          <input type="hidden" id="disabled_off_slots_data" value="<%= disabled_off_slots.presence || '[]' %>">
     </div>
 
     <div class="row">

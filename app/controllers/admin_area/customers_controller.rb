@@ -65,8 +65,28 @@ class AdminArea::CustomersController < ApplicationController
 
   def history
     @customer = Customer.find(params[:id])
-    @offs = Off.where(child_id: @customer.children.pluck(:id))
-    @transfers = Transfer.where(child_id: @customer.children.pluck(:id))
+    child_ids = @customer.children.pluck(:id)
+    
+    if child_ids.any?
+      @offs = Off.where(child_id: child_ids).order(created_at: :desc)
+      @transfers = Transfer.where(child_id: child_ids).order(created_at: :desc)
+    else
+      @offs = []
+      @transfers = []
+    end
+    
+    Rails.logger.info("History: customer=#{@customer.id}, children=#{child_ids.count}, transfers=#{@transfers.count}")
+  end
+
+  def destroy_transfer
+    @transfer = Transfer.find(params[:id])
+    @customer = @transfer.child.customer
+    
+    # off_flagをリセット（お休みを再度登録可能にする）
+    @transfer.off.update(flag: 0) if @transfer.off.present?
+    
+    @transfer.destroy
+    redirect_to history_admin_area_customer_path(@customer), notice: "振替申込みを削除しました。"
   end
   
   def change_status

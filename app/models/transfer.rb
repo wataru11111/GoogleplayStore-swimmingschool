@@ -22,7 +22,7 @@ class Transfer < ApplicationRecord
 
   # ✅ 人数制限のロジック（public専用）
   def limit_transfers_per_time_slot
-    if Transfer.where(transfer_date: transfer_date, level: level, transfer_time: transfer_time).count >= 2
+    if Transfer.where(transfer_date: transfer_date, level: level, transfer_time: transfer_time).count >= 3
       errors.add(:base, "申し訳ございません。その日にちは人数に空きがないため振替ができません。別の日にち、時間帯で試してください。")
     end
   end

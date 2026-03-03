@@ -1,12 +1,13 @@
 class AdminArea::SettingsController < ApplicationController
   before_action :authenticate_admin!
-  skip_before_action :verify_authenticity_token, only: [:add_slot, :delete_slot]
+  skip_before_action :verify_authenticity_token, only: [:add_slot, :delete_slot, :add_slot_off, :delete_slot_off]
   
   def index
     @available_off_day       = Setting.find_by(key: 'available_off_day')&.value
     @available_transfer_day  = Setting.find_by(key: 'available_transfer_day')&.value
     @disabled_transfer_days  = Setting.find_by(key: 'disabled_transfer_days')&.value
     @disabled_transfer_slots = Setting.find_by(key: 'disabled_transfer_slots')&.value
+    @disabled_off_slots      = Setting.find_by(key: 'disabled_off_slots')&.value
   end
 
   def update
@@ -60,6 +61,38 @@ class AdminArea::SettingsController < ApplicationController
     slots.delete_at(index) if index >= 0 && index < slots.length
     
     Setting.find_or_initialize_by(key: 'disabled_transfer_slots').update(value: slots.to_json)
+    
+    render json: { success: true, slots: slots }
+  end
+
+  def add_slot_off
+    slots_json = Setting.find_by(key: 'disabled_off_slots')&.value || '[]'
+    slots = JSON.parse(slots_json) rescue []
+    
+    new_slot = {
+      'date' => params[:date],
+      'type' => params[:slot_type]
+    }
+    
+    if params[:slot_type] == 'time_range'
+      new_slot['start_time'] = params[:start_time]
+      new_slot['end_time'] = params[:end_time]
+    end
+    
+    slots << new_slot
+    Setting.find_or_initialize_by(key: 'disabled_off_slots').update(value: slots.to_json)
+    
+    render json: { success: true, slots: slots }
+  end
+
+  def delete_slot_off
+    slots_json = Setting.find_by(key: 'disabled_off_slots')&.value || '[]'
+    slots = JSON.parse(slots_json) rescue []
+    
+    index = params[:index].to_i
+    slots.delete_at(index) if index >= 0 && index < slots.length
+    
+    Setting.find_or_initialize_by(key: 'disabled_off_slots').update(value: slots.to_json)
     
     render json: { success: true, slots: slots }
   end

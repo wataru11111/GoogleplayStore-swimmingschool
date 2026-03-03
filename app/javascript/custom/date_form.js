@@ -1,18 +1,28 @@
 // app/javascript/custom/date_form.js
 let disabledTransferSlots = [];
+let disabledOffSlots = [];
 
 function initializeDateFormScripts() {
-  // ===== 時間帯制限データを先に取得（Flatpickrより前） =====
+  // ===== 制限データを先に取得（Flatpickrより前） =====
   const currentPath = window.location.pathname;
-  if (currentPath === "/date") {
-    const disabledSlotsEl = document.getElementById("disabled_slots_data");
-    if (disabledSlotsEl && disabledSlotsEl.value) {
-      try {
-        disabledTransferSlots = JSON.parse(disabledSlotsEl.value);
-      } catch(e) {
-        console.error("Failed to parse disabled slots:", e);
-        disabledTransferSlots = [];
-      }
+
+  const disabledSlotsEl = document.getElementById("disabled_slots_data");
+  if (disabledSlotsEl && disabledSlotsEl.value) {
+    try {
+      disabledTransferSlots = JSON.parse(disabledSlotsEl.value);
+    } catch(e) {
+      console.error("Failed to parse transfer disabled slots:", e);
+      disabledTransferSlots = [];
+    }
+  }
+
+  const disabledOffSlotsEl = document.getElementById("disabled_off_slots_data");
+  if (disabledOffSlotsEl && disabledOffSlotsEl.value) {
+    try {
+      disabledOffSlots = JSON.parse(disabledOffSlotsEl.value);
+    } catch(e) {
+      console.error("Failed to parse off disabled slots:", e);
+      disabledOffSlots = [];
     }
   }
 
@@ -137,7 +147,7 @@ function setupFlatpickr(inputId) {
   const minDate = el.dataset.mindate || el.getAttribute("min") || null;
   const maxDate = el.dataset.maxdate || el.getAttribute("max") || null;
 
-  // 全休の日をdisableリストに追加
+  // ===== transfer_date：振替登録の不可能日 =====
   if (inputId === "transfer_date" && disabledTransferSlots.length > 0) {
     disabledTransferSlots.forEach(slot => {
       if (slot.type === 'all_day') {
@@ -145,6 +155,17 @@ function setupFlatpickr(inputId) {
       }
     });
   }
+
+  // ===== off_month：お休み登録の不可能日 =====
+  if (inputId === "off_month" && disabledOffSlots.length > 0) {
+    disabledOffSlots.forEach(slot => {
+      if (slot && slot.date) {
+        disabled.push(slot.date);
+      }
+    });
+  }
+
+  const uniqueDisabled = [...new Set(disabled)];
 
   if (window.flatpickr.l10ns && window.flatpickr.l10ns.ja) {
     window.flatpickr.localize(window.flatpickr.l10ns.ja);
@@ -155,10 +176,9 @@ function setupFlatpickr(inputId) {
     disableMobile: true,   // スマホでも同じUI
     minDate: minDate,
     maxDate: maxDate,
-    disable: disabled      // ← ここで不可能日を完全にクリック不可に
+    disable: uniqueDisabled      // ← ここで不可能日を完全にクリック不可に
   });
 }
 
 document.addEventListener("turbo:load", initializeDateFormScripts);
-
 

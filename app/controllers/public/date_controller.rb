@@ -65,7 +65,8 @@ class Public::DateController < ApplicationController
      ).count
 
    if count >= 3
-     flash[:alert] = "#{@date.transfer_time} の #{@date.level} クラスは定員に達しています。別の時間をお選びください。"
+    # flash[:alert] = "#{@date.transfer_time} の #{@date.level} クラスは定員に達しています。別の時間をお選びください。"
+     flash[:alert] = "その時間帯は定員です。別の曜日か別の時間を登録してください。"
      redirect_to date_index_path and return
    end  
 
