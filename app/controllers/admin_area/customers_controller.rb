@@ -1,6 +1,7 @@
 class AdminArea::CustomersController < ApplicationController
   before_action :authenticate_admin!
 
+
   def index
     if params[:q].present?
       query = params[:q].strip
