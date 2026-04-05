@@ -2,6 +2,8 @@ class Off < ApplicationRecord
   belongs_to :child
   has_many :transfers, foreign_key: :off_id
 
+  before_validation :normalize_contact_times
+
   # ✅ contextが:publicのときだけバリデーションを適用
   validates :off_day, uniqueness: {
     scope: [:child_id, :off_month],
@@ -55,5 +57,10 @@ class Off < ApplicationRecord
  # ✅ contextが :public のときのみ true
   def validate_public_context?
     validation_context == :public || validation_context.nil?
+  end
+
+  def normalize_contact_times
+    self.contact_time1 = TimeSlotNormalizer.normalize_contract_time(contact_dey1, contact_time1)
+    self.contact_time2 = TimeSlotNormalizer.normalize_contract_time(contact_dey2, contact_time2)
   end
 end

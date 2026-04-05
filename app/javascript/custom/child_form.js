@@ -5,7 +5,8 @@ function initializeChildFormScripts() {
     !(
       currentPath.includes("/child/new") ||
       currentPath.match(/\/child\/\d+\/edit/) ||
-      currentPath.match(/\/admin\/child\/\d+\/edit/)
+      currentPath.match(/\/admin\/child\/\d+\/edit/) ||
+      currentPath.match(/\/admin_area\/child\/\d+\/edit/)
     )
   ) {
     console.log("child_form.js: 対象外のページです。スクリプトを実行しません。");
@@ -13,10 +14,45 @@ function initializeChildFormScripts() {
   }
 
   const timeOptions = {
-    水曜日: ["14:30", "15:15", "19:30"],
-    木曜日: ["14:30", "15:00"],
-    土曜日: ["16:00", "17:00", "18:00"],
+    水曜日: ["15:15", "16:00"],
+    木曜日: ["14:10", "14:50"],
+    土曜日: ["16:30", "17:30", "18:30"],
     日曜日: ["12:00", "13:00", "14:00", "17:00"],
+  };
+
+  const legacyTimeMap = {
+    水曜日: { "14:30": "15:15", "15:15": "16:00", "19:30": "" },
+    木曜日: { "14:30": "14:10", "15:00": "14:50" },
+    土曜日: { "16:00": "16:30", "17:00": "17:30", "18:00": "18:30" },
+  };
+
+  const normalizeLegacyTime = (day, time) => {
+    if (!day || !time) return time;
+    const mapped = legacyTimeMap[day]?.[time];
+    return mapped === undefined ? time : mapped;
+  };
+
+  const rebuildTimeSelect = (selectEl, day) => {
+    const currentValue = normalizeLegacyTime(day, selectEl.value);
+    selectEl.innerHTML = "";
+
+    const blankOption = document.createElement("option");
+    blankOption.value = "";
+    blankOption.textContent = "時間選択";
+    selectEl.appendChild(blankOption);
+
+    (timeOptions[day] || []).forEach((t) => {
+      const opt = document.createElement("option");
+      opt.value = t;
+      opt.textContent = t;
+      selectEl.appendChild(opt);
+    });
+
+    if (currentValue && (timeOptions[day] || []).includes(currentValue)) {
+      selectEl.value = currentValue;
+    } else {
+      selectEl.value = "";
+    }
   };
 
   // 🕒 時間1
@@ -24,14 +60,7 @@ function initializeChildFormScripts() {
   const time1 = document.getElementById("child_contact_time1");
   if (day1 && time1) {
     const updateTime1 = () => {
-      const selected = day1.value;
-      time1.innerHTML = "";
-      (timeOptions[selected] || ["時間選択"]).forEach(t => {
-        const opt = document.createElement("option");
-        opt.value = t === "時間選択" ? "" : t;
-        opt.textContent = t;
-        time1.appendChild(opt);
-      });
+      rebuildTimeSelect(time1, day1.value);
     };
     day1.addEventListener("change", updateTime1);
     updateTime1();
@@ -42,14 +71,7 @@ function initializeChildFormScripts() {
   const time2 = document.getElementById("child_contact_time2");
   if (day2 && time2) {
     const updateTime2 = () => {
-      const selected = day2.value;
-      time2.innerHTML = "";
-      (timeOptions[selected] || ["時間選択"]).forEach(t => {
-        const opt = document.createElement("option");
-        opt.value = t === "時間選択" ? "" : t;
-        opt.textContent = t;
-        time2.appendChild(opt);
-      });
+      rebuildTimeSelect(time2, day2.value);
     };
     day2.addEventListener("change", updateTime2);
     updateTime2();

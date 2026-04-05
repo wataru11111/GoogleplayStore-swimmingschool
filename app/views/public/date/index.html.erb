@@ -3,13 +3,13 @@
 <% disabled_transfer_slots = Setting.find_by(key: 'disabled_transfer_slots')&.value.to_s %>
 
 <div class="calendar-photo-container">
-<h2>2月3月スケジュール表</h2> 
-  <%= image_tag 'feb_mar_schedule.png', class: 'calendar-photo', alt: '11月12月スケジュール' %>
+  <h2>1月スケジュール表</h2>
+  <%= image_tag 'January.png', class: 'calendar-photo', alt: '1月スケジュール' %>
 </div>
 
 <div class="calendar-photo-container">
-  <h2>4月スケジュール表</h2>
-  <%= image_tag 'april_2026.png', class: 'calendar-photo', alt: '4月スケジュール' %>
+<h2>2月3月スケジュール表</h2> 
+  <%= image_tag 'feb_mar_schedule.png', class: 'calendar-photo', alt: '11月12月スケジュール' %>
 </div>
 
 <div class="container">
@@ -23,12 +23,10 @@
   <br />
 
   <p class="fc-day-sat">土曜日</p>
-  <p>16:00〜17:00     3歳カニ〜ピンク星</p>
-  <p>17:00〜18:00     黄星2〜ピンク星</p>
-  <p>18:00〜19:00     小学生青星1～ピンク星</p>
+  <p>16:30〜17:30     3歳カニ〜ピンク星</p>
+  <p>17:30〜18:30     黄星2〜ピンク星</p>
+  <p>18:30〜19:30     小学生青星1～ピンク星</p>
 
-  <p class="fc-day-wed">水曜日</p>
-  <p>19:30〜20:30    小学生青星1～ピンク星</p>
 </div>
 
 <% if flash[:alert] %>
@@ -95,7 +93,7 @@
 
   <div class="field">
     <%= f.label :contact_dey, "振替曜日", for: "contact_dey" %><br />
-    <%= f.select :contact_dey, [["土曜日","土曜日"],["日曜日","日曜日"],["水曜日","水曜日"],["祝日","祝日"]], { include_blank: "曜日選択" }, { id: "contact_dey" } %>
+    <%= f.select :contact_dey, [["土曜日","土曜日"],["日曜日","日曜日"],["祝日","祝日"]], { include_blank: "曜日選択" }, { id: "contact_dey" } %>
   </div>
 
   <div class="field">
@@ -114,4 +112,3 @@
     </div>
   </div>
 <% end %>
-

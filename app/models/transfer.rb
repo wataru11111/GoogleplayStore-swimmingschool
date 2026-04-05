@@ -2,6 +2,8 @@ class Transfer < ApplicationRecord
   belongs_to :child
   belongs_to :off, foreign_key: :off_id
 
+  before_validation :normalize_transfer_time_slot
+
   # ✅ Public側だけでバリデーションを効かせたい項目
   validates :last_name, presence: { message: "苗字を入力してください。" }, on: :public
   validates :first_name, presence: { message: "名前を入力してください。" }, on: :public
@@ -31,5 +33,10 @@ class Transfer < ApplicationRecord
   def reset_off_flag_on_error
     off&.reset_flag
   end
+  # ✅ 新時間変更
+  def normalize_transfer_time_slot
+    self.transfer_time = TimeSlotNormalizer.normalize_transfer_time(contact_dey, transfer_time)
+  end
 end
+
 

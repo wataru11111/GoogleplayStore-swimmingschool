@@ -3,9 +3,18 @@ class Child < ApplicationRecord
   has_many :transfer
   has_many :offs
 
+  before_validation :normalize_contact_times
+
   # フルネームを返すメソッド
   def full_name
     "#{last_name} #{first_name}"
+  end
+
+  private
+
+  def normalize_contact_times
+    self.contact_time1 = TimeSlotNormalizer.normalize_contract_time(contact_dey1, contact_time1)
+    self.contact_time2 = TimeSlotNormalizer.normalize_contract_time(contact_dey2, contact_time2)
   end
 
 # ✅ バリデーションをここに追加
