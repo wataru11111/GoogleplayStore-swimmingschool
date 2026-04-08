@@ -2,7 +2,6 @@ module TimeSlotNormalizer
   LEGACY_TIME_MAPPING = {
     "水曜日" => {
       "14:30" => "15:15",
-      "15:15" => "16:00",
       "19:30" => nil
     },
     "木曜日" => {
