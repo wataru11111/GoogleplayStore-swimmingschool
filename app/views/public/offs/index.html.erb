@@ -2,14 +2,9 @@
 <% max_off_date       = Setting.find_by(key: 'available_off_day')&.value %>
 <% disabled_off_slots = Setting.find_by(key: 'disabled_off_slots')&.value.to_s %>
 
-<div class="calendar-photo-container">
-<h2>2月3月スケジュール表</h2> 
-  <%= image_tag 'feb_mar_schedule.png', class: 'calendar-photo', alt: '11月12月スケジュール' %>
-</div>
-
-<div class="calendar-photo-container">
-  <h2>4月スケジュール表</h2>
-  <%= image_tag 'april_2026.png', class: 'calendar-photo', alt: '4月スケジュール' %>
+<div class="calendar-photo-container"> 
+<h2>4月5月スケジュール表</h2> 
+  <%= image_tag '4_5_2026.png', alt: '４月５月スケジュール' %> 
 </div>
 
 
