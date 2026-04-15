@@ -313,7 +313,7 @@ document.addEventListener('turbo:load', function() {
         html += `<td><span class="badge bg-warning text-dark">${slot.start_time} ～ ${slot.end_time}</span></td>`;
       }
       
-      html += `<td><button type="button" class="btn btn-sm btn-danger delete-btn" data-index="${index}">削除</button></td>`;
+      html += `<td><button type="button" class="btn btn-sm btn-danger delete-btn" data-index="${index}" data-date="${slot.date}" data-type="${slot.type}" data-start-time="${slot.start_time || ''}" data-end-time="${slot.end_time || ''}">削除</button></td>`;
       html += '</tr>';
     });
     
@@ -324,6 +324,10 @@ document.addEventListener('turbo:load', function() {
     document.querySelectorAll('.delete-btn').forEach(btn => {
       btn.addEventListener('click', function() {
         const index = parseInt(this.getAttribute('data-index'));
+        const date = this.getAttribute('data-date');
+        const type = this.getAttribute('data-type');
+        const startTime = this.getAttribute('data-start-time');
+        const endTime = this.getAttribute('data-end-time');
         if (confirm('この設定を削除しますか？')) {
           // Ajaxで削除
           fetch('/admin_area/settings/delete_slot', {
@@ -332,7 +336,13 @@ document.addEventListener('turbo:load', function() {
               'Content-Type': 'application/json',
               'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
             },
-            body: JSON.stringify({ index: index })
+            body: JSON.stringify({
+              index: index,
+              date: date,
+              type: type,
+              start_time: startTime,
+              end_time: endTime
+            })
           })
           .then(response => response.json())
           .then(data => {
@@ -507,7 +517,7 @@ document.addEventListener('turbo:load', function() {
         html += `<td><span class="badge bg-warning text-dark">${slot.start_time} ～ ${slot.end_time}</span></td>`;
       }
       
-      html += `<td><button type="button" class="btn btn-sm btn-danger delete-btn-off" data-index="${index}">削除</button></td>`;
+      html += `<td><button type="button" class="btn btn-sm btn-danger delete-btn-off" data-index="${index}" data-date="${slot.date}" data-type="${slot.type}" data-start-time="${slot.start_time || ''}" data-end-time="${slot.end_time || ''}">削除</button></td>`;
       html += '</tr>';
     });
     
@@ -518,6 +528,10 @@ document.addEventListener('turbo:load', function() {
     document.querySelectorAll('.delete-btn-off').forEach(btn => {
       btn.addEventListener('click', function() {
         const index = parseInt(this.getAttribute('data-index'));
+        const date = this.getAttribute('data-date');
+        const type = this.getAttribute('data-type');
+        const startTime = this.getAttribute('data-start-time');
+        const endTime = this.getAttribute('data-end-time');
         if (confirm('この設定を削除しますか？')) {
           // Ajaxで削除
           fetch('/admin_area/settings/delete_slot_off', {
@@ -526,7 +540,13 @@ document.addEventListener('turbo:load', function() {
               'Content-Type': 'application/json',
               'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
             },
-            body: JSON.stringify({ index: index })
+            body: JSON.stringify({
+              index: index,
+              date: date,
+              type: type,
+              start_time: startTime,
+              end_time: endTime
+            })
           })
           .then(response => response.json())
           .then(data => {
@@ -551,4 +571,3 @@ document.addEventListener('turbo:load', function() {
   }
 });
 </script>
-

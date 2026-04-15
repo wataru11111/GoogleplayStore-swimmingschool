@@ -56,9 +56,12 @@ class AdminArea::SettingsController < ApplicationController
   def delete_slot
     slots_json = Setting.find_by(key: 'disabled_transfer_slots')&.value || '[]'
     slots = JSON.parse(slots_json) rescue []
-    
-    index = params[:index].to_i
-    slots.delete_at(index) if index >= 0 && index < slots.length
+
+    remove_slot_by_payload!(slots, params)
+    if params[:date].blank? && params[:type].blank?
+      index = params[:index].to_i
+      slots.delete_at(index) if index >= 0 && index < slots.length
+    end
     
     Setting.find_or_initialize_by(key: 'disabled_transfer_slots').update(value: slots.to_json)
     
@@ -88,9 +91,12 @@ class AdminArea::SettingsController < ApplicationController
   def delete_slot_off
     slots_json = Setting.find_by(key: 'disabled_off_slots')&.value || '[]'
     slots = JSON.parse(slots_json) rescue []
-    
-    index = params[:index].to_i
-    slots.delete_at(index) if index >= 0 && index < slots.length
+
+    remove_slot_by_payload!(slots, params)
+    if params[:date].blank? && params[:type].blank?
+      index = params[:index].to_i
+      slots.delete_at(index) if index >= 0 && index < slots.length
+    end
     
     Setting.find_or_initialize_by(key: 'disabled_off_slots').update(value: slots.to_json)
     
@@ -105,5 +111,24 @@ class AdminArea::SettingsController < ApplicationController
        .map { |s| Date.parse(s).strftime('%Y-%m-%d') rescue nil }
        .compact.uniq.sort.join(',')
   end
-end
 
+  def remove_slot_by_payload!(slots, payload)
+    date = payload[:date].to_s
+    type = payload[:type].to_s
+    start_time = payload[:start_time].to_s
+    end_time = payload[:end_time].to_s
+
+    return if date.blank? || type.blank?
+
+    index = slots.find_index do |slot|
+      next false unless slot.is_a?(Hash)
+
+      slot['date'].to_s == date &&
+        slot['type'].to_s == type &&
+        slot['start_time'].to_s == start_time &&
+        slot['end_time'].to_s == end_time
+    end
+
+    slots.delete_at(index) if index
+  end
+end
