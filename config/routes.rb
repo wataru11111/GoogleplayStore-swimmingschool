@@ -71,6 +71,7 @@ Rails.application.routes.draw do
     get 'customers/unsubscribe' => "customers#unsubscribe"
     patch 'customers/withdrawal' => "customers#withdrawal"
     get '/about' => "homes#about"
+    get '/howto' => 'homes#howto', as: 'howto'
 
     resources :items, only: [:index, :show]
   end
