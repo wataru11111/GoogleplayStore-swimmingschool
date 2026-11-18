@@ -159,6 +159,288 @@
   <%= submit_tag "基本設定を保存", class: "btn btn-primary", style: "margin-top: 20px;" %>
 <% end %>
 
+
+<style>
+/* ADMIN_ADDITIONAL_DAYS_COMPACT_20261118 */
+
+/* 追加日設定の枠は内容の高さに合わせる */
+.additional-transfer-days,
+.additional-off-days {
+  display: flow-root !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 12px 0 !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+}
+
+/* フォームに適用された不要な高さを解除 */
+.additional-transfer-days > form,
+.additional-off-days > form {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+
+  margin: 10px 0 !important;
+  padding: 0 !important;
+  position: static !important;
+  float: none !important;
+  flex: 0 0 auto !important;
+  overflow: visible !important;
+}
+
+/* お休み追加フォーム内の入力欄 */
+.additional-off-days > form > div {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 8px !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* 登録済み日付をフォームの近くに表示 */
+.additional-transfer-days h4,
+.additional-off-days h4 {
+  margin: 14px 0 8px !important;
+}
+
+/* スマートフォンでも見やすくする */
+@media (max-width: 600px) {
+  .additional-transfer-days > form,
+  .additional-off-days > form {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .additional-transfer-days,
+  .additional-off-days {
+    padding: 12px !important;
+  }
+}
+</style>
+
+
+<style>
+/* ADMIN_ADDITIONAL_DAYS_ROWS_FIX_20261118 */
+
+/* 登録済み追加日の行 */
+.additional-transfer-days .registered-extra-day-row,
+.additional-off-days .registered-extra-day-row {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 12px !important;
+
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+
+  margin: 8px 0 !important;
+  padding: 0 !important;
+  position: static !important;
+  box-sizing: border-box !important;
+}
+
+/* 日付を削除ボタンと同じ高さにする */
+.additional-transfer-days .registered-extra-day-row > span,
+.additional-off-days .registered-extra-day-row > span {
+  display: inline-block !important;
+  align-self: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  line-height: 1.5 !important;
+}
+
+/* 削除ボタンのbutton_toが作るフォームの高さを解除 */
+.additional-transfer-days .registered-extra-day-row > form,
+.additional-off-days .registered-extra-day-row > form {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  align-self: center !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+
+  position: static !important;
+  float: none !important;
+  overflow: visible !important;
+}
+
+/* 削除ボタン自体の余白も解除 */
+.additional-transfer-days .registered-extra-day-row > form > button,
+.additional-off-days .registered-extra-day-row > form > button {
+  margin: 0 !important;
+  flex: 0 0 auto !important;
+}
+</style>
+
+<style>
+/* ADMIN_TRANSFER_TIME_SLOTS_20261119 */
+.additional-transfer-days > form .extra-transfer-time-picker {
+  flex: 1 1 100% !important;
+  width: 100% !important;
+  max-width: 720px;
+  margin: 8px 0 12px !important;
+  padding: 12px !important;
+  border: 1px solid #d7dce3;
+  border-radius: 8px;
+  background: #f8fafd;
+  box-sizing: border-box;
+  height: auto !important;
+  min-height: 0 !important;
+}
+.extra-transfer-time-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 8px;
+  margin: 10px 0;
+}
+.extra-transfer-time-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #d2d7df;
+  border-radius: 6px;
+  background: white;
+  padding: 7px 9px;
+  margin: 0;
+  font-size: 14px;
+  cursor: pointer;
+}
+.extra-transfer-time-option input { margin: 0; }
+</style>
+<script>
+(function () {
+  function setupTransferTimeLimit() {
+    const grid = document.getElementById("transfer-extra-time-grid");
+    if (!grid || grid.dataset.timeLimitInitialized === "1") return;
+    grid.dataset.timeLimitInitialized = "1";
+    grid.addEventListener("change", function (event) {
+      if (!event.target.matches('input[type="checkbox"]')) return;
+      const count = grid.querySelectorAll('input[type="checkbox"]:checked').length;
+      if (count > 6) {
+        event.target.checked = false;
+        window.alert("振替時間は1回につき最大6枠まで選択できます。");
+      }
+    });
+  }
+  document.addEventListener("DOMContentLoaded", setupTransferTimeLimit);
+  document.addEventListener("turbo:load", setupTransferTimeLimit);
+  setupTransferTimeLimit();
+})();
+</script>
+
+<!-- ADMIN_ADDITIONAL_DAYS_20261118 -->
+<hr>
+<div class="additional-transfer-days" style="margin:12px 0; padding:14px 16px; background:#fff; border-radius:8px; height:auto; min-height:0; box-sizing:border-box;">
+  <h3>振替登録の追加日</h3>
+  <p>土日は通常どおり。平日・祝日はここで追加した日だけ振替可能になります。</p>
+  <p>※ 11:00〜19:30の30分刻みから1〜6枠を指定します。登録不可日の設定が優先されます。</p>
+  <%= form_with url: add_transfer_day_admin_area_settings_path, method: :post,
+        local: true, data: { turbo: false } do |f| %>
+    <%= f.label :date, "追加する日付" %>
+    <%= f.date_field :date, required: true, min: Date.current.iso8601 %>
+    <div class="extra-transfer-time-picker">
+      <strong>振替可能な時間（30分刻み・1〜6枠）</strong>
+      <div id="transfer-extra-time-grid" class="extra-transfer-time-grid">
+        <% TransferCalendar::HOLIDAY_TIMES.each do |time| %>
+          <% checkbox_id = "transfer_extra_time_#{time.delete(':')}" %>
+          <label class="extra-transfer-time-option" for="<%= checkbox_id %>">
+            <%= check_box_tag "times[]", time, false, id: checkbox_id %>
+            <%= time %>
+          </label>
+        <% end %>
+      </div>
+      <small>1〜6個選択してください。すでに登録した日付を指定すると時間を更新できます。</small>
+    </div>
+    <%= f.submit "指定した日時を登録・更新", class: "btn btn-primary" %>
+  <% end %>
+  <h4 style="margin-top:15px;">登録済み追加日</h4>
+  <% if @extra_transfer_days.empty? %>
+    <p>登録なし</p>
+  <% else %>
+    <% @extra_transfer_days.each do |day| %>
+      <div class="registered-extra-day-row">
+        <span><strong><%= day %></strong>：
+          <% configured_times = ScheduleOverrides.transfer_slots_for(day) %>
+          <% if configured_times.any? %>
+            <%= configured_times.join("、") %>
+          <% else %>
+            <strong style="color:#a3322a;">時間未設定（上のフォームから再登録してください）</strong>
+          <% end %>
+        </span>
+        <%= button_to "削除", remove_transfer_day_admin_area_settings_path,
+              method: :delete, params: { date: day },
+              data: { turbo_confirm: "この振替追加日を削除しますか？" },
+              class: "btn btn-sm btn-danger" %>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
+<div class="additional-off-days" style="margin:12px 0; padding:14px 16px; background:#fff; border-radius:8px; height:auto; min-height:0; box-sizing:border-box;">
+  <h3>お休み登録の追加日（契約曜日ごと）</h3>
+  <p>契約曜日のレッスンが別日に変更されたときに使用します。</p>
+  <%= form_with url: add_off_day_admin_area_settings_path, method: :post,
+        local: true, data: { turbo: false } do |f| %>
+    <div>
+      <%= f.label :contract_weekday, "元の契約曜日" %>
+      <%= f.select :contract_weekday,
+            options_for_select(ScheduleOverrides::WEEKDAYS), {}, required: true %>
+    </div>
+    <div>
+      <%= f.label :date, "追加するレッスン日" %>
+      <%= f.date_field :date, required: true, min: Date.current.iso8601 %>
+    </div>
+    <%= f.submit "お休み日を追加", class: "btn btn-primary" %>
+  <% end %>
+  <h4 style="margin-top:15px;">登録済み追加日</h4>
+  <% if @extra_off_days.empty? %>
+    <p>登録なし</p>
+  <% else %>
+    <% @extra_off_days.each do |entry| %>
+      <div class="registered-extra-day-row">
+        <span><%= entry["contract_weekday"] %>契約 → <%= entry["date"] %></span>
+        <%= button_to "削除", remove_off_day_admin_area_settings_path,
+              method: :delete,
+              params: { date: entry["date"], contract_weekday: entry["contract_weekday"] },
+              data: { turbo_confirm: "このお休み追加日を削除しますか？" },
+              class: "btn btn-sm btn-danger" %>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
 <script>
 document.addEventListener('turbo:load', function() {
   let disabledSlots = [];

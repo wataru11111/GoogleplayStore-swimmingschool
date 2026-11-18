@@ -30,7 +30,7 @@ Rails.application.routes.draw do
         post :broadcast_sms
       end
     end
-    resources :offs, only: [:index, :new, :create] # お休み一覧ページのルート
+    resources :offs, only: [:index, :new, :create, :edit, :update, :destroy] # G_ADMIN_OFF_MANAGEMENT_20261119 # お休み一覧ページのルート
     resources :transfers, only: [:new, :create]
     resources :child, only: [:edit, :update] # 管理者用の子供編集ページ
     resources :settings, only: [:index, :update] do
@@ -39,6 +39,10 @@ Rails.application.routes.draw do
         post :delete_slot
         post :add_slot_off
         post :delete_slot_off
+        post :add_transfer_day
+        delete :remove_transfer_day
+        post :add_off_day
+        delete :remove_off_day # ADMIN_ADDITIONAL_DAYS_20261118
       end
     end
   end
@@ -48,6 +52,7 @@ Rails.application.routes.draw do
 
     get 'dates/confirmation' => "date#confirmation"
     get 'dates/completion' => "date#completion"
+    get 'dates/slot_availability' => "date#slot_availability"
 
     resources :date, only: [:show, :index, :new, :create]
     

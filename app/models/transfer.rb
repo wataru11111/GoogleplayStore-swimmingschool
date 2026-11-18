@@ -18,7 +18,6 @@ class Transfer < ApplicationRecord
   validate :limit_transfers_per_time_slot, on: :public
 
   # ✅ エラー時は関連Offのflagをリセット（全体で使うのでcontext制御なしでOK）
-  after_validation :reset_off_flag_on_error, if: -> { errors.any? }
 
   private
 
@@ -30,13 +29,32 @@ class Transfer < ApplicationRecord
   end
 
   # ✅ エラーがあればOffのflagを戻す
-  def reset_off_flag_on_error
-    off&.reset_flag
-  end
   # ✅ 新時間変更
   def normalize_transfer_time_slot
     self.transfer_time = TimeSlotNormalizer.normalize_transfer_time(contact_dey, transfer_time)
   end
+
+  # A_DUPLICATE_TRANSFER_GUARD_20261118
+  validate :reject_duplicate_child_transfer_slot
+
+  private
+
+  def reject_duplicate_child_transfer_slot
+    return if child_id.blank? || transfer_date.blank? || transfer_time.blank?
+    return if persisted? && !will_save_change_to_child_id? &&
+              !will_save_change_to_transfer_date? && !will_save_change_to_transfer_time?
+
+    duplicate = Transfer.where(
+      child_id: child_id,
+      transfer_date: transfer_date,
+      transfer_time: transfer_time
+    ).where.not(id: id).exists?
+
+    if duplicate
+      errors.add(:base, "この振替日・時間は既に登録済みです。別の日時を選択してください。")
+    end
+  end
+
 end
 
 

@@ -3,44 +3,45 @@
 <% disabled_off_slots = Setting.find_by(key: 'disabled_off_slots')&.value.to_s %>
 
 <div class="calendar-photo-container">
-  <h2>9月10月スケジュール表</h2>
-  <%= image_tag 'sep_oct_2026_schedule_742.png', class: 'calendar-photo', alt: '9月10月スケジュール表' %>
-</div>
-
-<div class="calendar-photo-container">
   <h2>11月12月スケジュール表</h2>
   <%= image_tag 'junior_swimming_nov_dec_2026_742x1024.png', class: 'calendar-photo', alt: '11月12月スケジュール表' %>
 </div>
 
+<div class="calendar-photo-container">
+  <h2>1月2月スケジュール表</h2>
+  <%= image_tag 'junior_swimming_jan_feb_2026_742x1024.png', class: 'calendar-photo', alt: '1月2月スケジュール表' %>
+</div>
+
 <div class="container">
   <% if flash[:alert].present? %>
-    <div class="alert alert-danger"><%= flash[:alert] %></div>
+    <div class="alert alert-danger" style="white-space: pre-line;"><%= flash[:alert] %></div>
   <% end %>
 
-  <% if @off&.errors&.any? %>
-    <div class="error-messages">
-      <h2>登録に失敗しました</h2>
-      <ul>
-        <% @off.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <%# DUPLICATE_MESSAGE_SINGLE_20261118: flash[:alert] のみ表示 %>
 
-  <%= form_with model: @off, url: offs_path, method: :post do |f| %>
-    <div class="field">
-      <%= f.label :姓 %><br />
-      <%= f.text_field :child_last_name %>
-    </div>
-
-    <div class="field">
-      <%= f.label :名 %><br />
-      <%= f.text_field :child_first_name %>
-    </div>
+  <% contract_days_map = @children.to_h { |child|
+      [child.id.to_s, [child.contact_dey1, child.contact_dey2].compact.uniq]
+    } %>
+    <%= form_with model: @off, url: offs_path,
+          method: :post, data: { turbo: false } do |f| %>
+    <% if @children.empty? %>
+      <div class="alert alert-danger">
+        会員登録をお願いします
+      </div>
+    <% else %>
+      <div class="field">
+        <%= f.label :child_id, "お子様のお名前" %><br />
+        <%= f.select :child_id,
+          @children.map { |child| [child.full_name, child.id] },
+          { include_blank: "お子様を選択してください" },
+          { id: "off_child_id",
+             data: { contract_days_map: contract_days_map.to_json } } %>
+      </div>
+    <% end %>
 
     <div class="field">
       <%= f.label :お休み日付 %><br />
+      <small>お子さんを選択すると契約曜日のみ選べます。</small><br />
       <!-- ← Flatpickr 用に text_field に変更 -->
       <%= f.text_field :off_month,
             id: "off_month",
@@ -56,8 +57,127 @@
 
     <div class="row">
       <div class="actions"><br>
-        <%= f.submit "保存" %>
+        <%= f.submit "保存", disabled: @children.empty? %>
       </div>
     </div>
   <% end %>
 </div>
+
+<%# ADMIN_ADDITIONAL_DAYS_20261118 %>
+<%= hidden_field_tag :off_additional_dates_data,
+      ScheduleOverrides.off_entries.to_json, id: "off_additional_dates_data" %>
+<!-- B_CONTRACT_WEEKDAY_FILTER_20261118 -->
+<script>
+(function () {
+  const weekdayNames = [
+    "日曜日", "月曜日", "火曜日", "水曜日",
+    "木曜日", "金曜日", "土曜日"
+  ];
+
+  function setupContractWeekdays() {
+    const select = document.getElementById("off_child_id");
+    const input = document.getElementById("off_month");
+
+    if (!select || !input) return;
+    if (select.dataset.contractFilterReady === "true") return;
+
+    let daysMap;
+    let extraOffDates = [];
+    try {
+      extraOffDates = JSON.parse(
+        document.getElementById("off_additional_dates_data")?.value || "[]"
+      );
+    } catch (error) {
+      console.error("お休み追加日の読み込みに失敗しました", error);
+    }
+
+    try {
+      daysMap = JSON.parse(
+        select.dataset.contractDaysMap || "{}"
+      );
+    } catch (error) {
+      console.error("契約曜日の読み込みに失敗しました", error);
+      return;
+    }
+
+    select.dataset.contractFilterReady = "true";
+
+    let originalDisable = null;
+
+    function applyFilter() {
+      const calendar = input._flatpickr;
+      if (!calendar) return false;
+
+      if (originalDisable === null) {
+        const existing = calendar.config.disable;
+        originalDisable = Array.isArray(existing)
+          ? existing.slice()
+          : (existing ? [existing] : []);
+      }
+
+      const allowed = new Set(
+        (daysMap[String(select.value)] || [])
+          .map(day => String(day).trim())
+      );
+
+      function isAllowedDate(date) {
+        const key = [date.getFullYear(),
+          String(date.getMonth() + 1).padStart(2, "0"),
+          String(date.getDate()).padStart(2, "0")].join("-");
+        return allowed.has(weekdayNames[date.getDay()]) ||
+          extraOffDates.some(entry =>
+            entry.date === key && allowed.has(entry.contract_weekday)
+          );
+      }
+
+      const contractFilter = function (date) {
+        return !isAllowedDate(date);
+      };
+
+      calendar.set("disable", [
+        ...originalDisable,
+        contractFilter
+      ]);
+
+      const selected = calendar.selectedDates[0];
+
+      if (
+        selected &&
+        !isAllowedDate(selected)
+      ) {
+        calendar.clear();
+      }
+
+      return true;
+    }
+
+    select.addEventListener("change", applyFilter);
+
+    // 既存のFlatpickrの初期化完了まで待つ
+    let attempts = 0;
+
+    function initialize() {
+      if (applyFilter()) return;
+
+      attempts += 1;
+      if (attempts < 30) {
+        window.setTimeout(initialize, 100);
+      }
+    }
+
+    initialize();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener(
+      "DOMContentLoaded", setupContractWeekdays
+    );
+  } else {
+    setupContractWeekdays();
+  }
+
+  document.addEventListener(
+    "turbo:load", setupContractWeekdays
+  );
+})();
+</script>

@@ -1,3 +1,49 @@
+
+<style>
+/* G_HISTORY_COMPACT_FIXED_20261119 */
+
+/* この管理者履歴ページ内だけフォームの高さを解除 */
+.admin-history-compact form {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  float: none !important;
+}
+
+/* テーブル内の削除ボタン用フォーム */
+.admin-history-compact table form {
+  display: inline-flex !important;
+  align-items: center !important;
+  width: auto !important;
+  min-width: 0 !important;
+  vertical-align: middle !important;
+}
+
+/* 履歴の各行 */
+.admin-history-compact table tbody tr {
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+/* 履歴の日付・時間・操作ボタンをそろえる */
+.admin-history-compact table tbody td {
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 10px 8px !important;
+  vertical-align: middle !important;
+}
+
+/* 削除ボタンの余白 */
+.admin-history-compact table form button,
+.admin-history-compact table form input[type="submit"] {
+  margin: 0 !important;
+  white-space: nowrap;
+}
+</style>
+
+<div class="admin-history-compact">
 <div class="container">
   <h2>お休みと振替履歴</h2>
 
@@ -84,4 +130,6 @@
     </div>
 
   <% end %>
+</div>
+
 </div>

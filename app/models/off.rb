@@ -3,12 +3,9 @@ class Off < ApplicationRecord
   has_many :transfers, foreign_key: :off_id
 
   before_validation :normalize_contact_times
+  validate :prevent_duplicate_off_month, on: :public
 
   # ✅ contextが:publicのときだけバリデーションを適用
-  validates :off_day, uniqueness: {
-    scope: [:child_id, :off_month],
-    message: "この日は既に登録されています。一度ページを再読み込みしてから別の日にちを指定してください。"
-  }, on: :public
 
   # ✅ コールバックも public だけ
   before_create :check_expiration_on_create, if: :validate_public_context?
@@ -58,6 +55,25 @@ class Off < ApplicationRecord
   def validate_public_context?
     validation_context == :public || validation_context.nil?
   end
+
+  def prevent_duplicate_off_month
+    return if child_id.blank? || off_month.blank?
+
+    duplicate = Off.where(
+      child_id: child_id,
+      off_month: off_month
+    )
+    duplicate = duplicate.where.not(id: id) if persisted?
+
+    if duplicate.exists?
+      errors.add(
+        :base,
+        "この日は既に登録されています。\n別の日にちを指定してください。"
+      )
+    end
+  end
+
+  # DUPLICATE_MESSAGE_SINGLE_20261118
 
   def normalize_contact_times
     self.contact_time1 = TimeSlotNormalizer.normalize_contract_time(contact_dey1, contact_time1)

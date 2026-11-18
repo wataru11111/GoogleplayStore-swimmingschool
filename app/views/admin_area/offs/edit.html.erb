@@ -1,0 +1,24 @@
+<%# G_ADMIN_OFF_MANAGEMENT_20261119 %>
+<style>
+  .admin-off-edit { max-width: 650px; margin: 25px auto; padding: 20px; background: rgba(255,255,255,.96); border-radius: 12px; }
+  .admin-off-edit form { min-height: 0 !important; height: auto !important; width: auto !important; margin: 12px 0 !important; padding: 0 !important; }
+  .admin-off-edit .admin-off-edit-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+  .admin-off-edit input[type=date] { max-width: 100%; padding: 6px; }
+</style>
+<div class="admin-off-edit">
+  <h2>お休み日の変更（管理者）</h2>
+  <p><strong>お子さん：</strong><%= @off.child.last_name %> <%= @off.child.first_name %></p>
+  <p><strong>現在のお休み日：</strong><%= @off.attribute_in_database("off_month").strftime("%Y年%m月%d日") %></p>
+  <% if flash[:alert].present? %>
+    <div class="alert alert-danger" style="white-space:pre-line"><%= flash[:alert] %></div>
+  <% end %>
+  <%= form_with model: @off, url: admin_area_off_path(@off), method: :patch, local: true, data: { turbo: false } do |f| %>
+    <%= f.label :off_month, "新しいお休み日" %>
+    <%= f.date_field :off_month, required: true, min: Date.current.iso8601, id: "admin_off_month" %>
+    <div class="admin-off-edit-actions">
+      <%= f.submit "変更を確定", class: "btn btn-primary" %>
+      <%= link_to "キャンセル", admin_area_customer_path(@customer, anchor: "admin-child-#{@off.child_id}"), class: "btn btn-secondary" %>
+    </div>
+  <% end %>
+  <p class="text-muted">契約曜日または管理者が追加したレッスン日を指定してください。振替済み・期限切れのお休みは変更できません。</p>
+</div>

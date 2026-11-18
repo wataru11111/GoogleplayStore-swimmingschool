@@ -23,6 +23,13 @@
   <div class="actions">
     <%= f.submit t('helpers.submit.login') %>
   </div>
+
+  <div class="password-help-entry">
+    <button type="button" id="password-help-open"
+            class="password-help-link">
+      パスワードを忘れた方はこちら
+    </button>
+  </div>
 <% end %>
 
-<%= render "public/shared/links" %>
+<%= render "public/shared/password_help_sms" %>

@@ -8,6 +8,8 @@ class AdminArea::SettingsController < ApplicationController
     @disabled_transfer_days  = Setting.find_by(key: 'disabled_transfer_days')&.value
     @disabled_transfer_slots = Setting.find_by(key: 'disabled_transfer_slots')&.value
     @disabled_off_slots      = Setting.find_by(key: 'disabled_off_slots')&.value
+    @extra_transfer_days = ScheduleOverrides.transfer_all_dates
+    @extra_off_days = ScheduleOverrides.off_entries # ADMIN_ADDITIONAL_DAYS_20261118
   end
 
   def update
@@ -101,6 +103,40 @@ class AdminArea::SettingsController < ApplicationController
     Setting.find_or_initialize_by(key: 'disabled_off_slots').update(value: slots.to_json)
     
     render json: { success: true, slots: slots }
+  end
+
+  # ADMIN_ADDITIONAL_DAYS_20261118
+  def add_transfer_day
+    date = Date.iso8601(params[:date].to_s)
+    raise ArgumentError, "本日以降の日付を指定してください" if date < Date.current
+    ScheduleOverrides.add_transfer!(date, params[:times])
+    redirect_to admin_area_settings_path, notice: "指定した振替日と時間を登録・更新しました。"
+  rescue ArgumentError => error
+    redirect_to admin_area_settings_path, alert: error.message
+  end
+
+  def remove_transfer_day
+    ScheduleOverrides.remove_transfer!(Date.iso8601(params[:date].to_s))
+    redirect_to admin_area_settings_path, notice: "振替追加日を削除しました。"
+  rescue ArgumentError
+    redirect_to admin_area_settings_path, alert: "削除する日付が不正です。"
+  end
+
+  def add_off_day
+    date = Date.iso8601(params[:date].to_s)
+    raise ArgumentError if date < Date.current
+    ScheduleOverrides.add_off!(date, params[:contract_weekday].to_s)
+    redirect_to admin_area_settings_path, notice: "契約曜日別のお休み追加日を登録しました。"
+  rescue ArgumentError
+    redirect_to admin_area_settings_path, alert: "日付と元の契約曜日を確認してください。"
+  end
+
+  def remove_off_day
+    date = Date.iso8601(params[:date].to_s)
+    ScheduleOverrides.remove_off!(date, params[:contract_weekday].to_s)
+    redirect_to admin_area_settings_path, notice: "お休み追加日を削除しました。"
+  rescue ArgumentError
+    redirect_to admin_area_settings_path, alert: "削除する設定が不正です。"
   end
 
   private

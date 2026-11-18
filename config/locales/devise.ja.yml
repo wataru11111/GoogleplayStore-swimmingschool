@@ -1,0 +1,75 @@
+ja:
+  devise:
+    failure:
+      already_authenticated: "すでにログインしています。"
+      unauthenticated: "ログインしてください。"
+      invalid: "メールアドレスまたはパスワードが正しくありません。"
+      not_found_in_database: "メールアドレスまたはパスワードが正しくありません。"
+      inactive: "アカウントが有効になっていません。"
+      inactive_account: "このアカウントは現在ご利用いただけません。"
+      locked: "アカウントがロックされています。"
+      last_attempt: "次に失敗するとアカウントがロックされます。"
+      timeout: "ログインの有効期限が切れました。再度ログインしてください。"
+      unconfirmed: "メールアドレスの確認が完了していません。"
+
+    sessions:
+      signed_in: "ログインしました。"
+      signed_out: "ログアウトしました。"
+      already_signed_out: "ログアウトしました。"
+
+    passwords:
+      no_token: "パスワード再設定メールのURLからアクセスしてください。"
+      send_instructions: "パスワード再設定の案内をメールで送信します。"
+      send_paranoid_instructions: "登録されている場合、再設定の案内をメールで送信します。"
+      updated: "パスワードを変更しました。"
+      updated_not_active: "パスワードを変更しました。"
+
+    registrations:
+      signed_up: "会員登録が完了しました。"
+      updated: "会員情報を更新しました。"
+      destroyed: "会員登録を解除しました。"
+      updated_but_not_signed_in: "情報を更新しました。再度ログインしてください。"
+      signed_up_but_inactive: "登録されましたが、まだアカウントが有効ではありません。"
+      signed_up_but_locked: "登録されましたが、アカウントがロックされています。"
+      signed_up_but_unconfirmed: "確認メールを送信しました。"
+      update_needs_confirmation: "メールアドレスの確認が必要です。"
+
+    mailer:
+      reset_password_instructions:
+        subject: "パスワード再設定のご案内"
+      password_change:
+        subject: "パスワード変更のお知らせ"
+      confirmation_instructions:
+        subject: "メールアドレス確認のご案内"
+      unlock_instructions:
+        subject: "アカウントロック解除のご案内"
+      email_changed:
+        subject: "メールアドレス変更のお知らせ"
+
+  activerecord:
+    models:
+      customer: "会員"
+    attributes:
+      customer:
+        email: "メールアドレス"
+        password: "パスワード"
+        password_confirmation: "確認用パスワード"
+        last_name: "姓"
+        first_name: "名"
+        last_name_kana: "姓カナ"
+        first_name_kana: "名カナ"
+        postal_code: "郵便番号"
+        address: "住所"
+        telephone_number: "電話番号"
+
+  errors:
+    messages:
+      blank: "を入力してください。"
+      invalid: "が正しくありません。"
+      taken: "はすでに登録されています。"
+      confirmation: "と確認用の入力が一致しません。"
+      too_short: "は%{count}文字以上で入力してください。"
+      too_long: "は%{count}文字以内で入力してください。"
+      not_saved:
+        one: "%{resource}に1件の入力エラーがあります。"
+        other: "%{resource}に%{count}件の入力エラーがあります。"

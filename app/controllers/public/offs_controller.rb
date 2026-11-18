@@ -1,9 +1,41 @@
 class Public::OffsController < ApplicationController
+  before_action :authenticate_customer!
+  before_action :load_registered_children, only: [:index, :create]
     def new
-      @off = Off.find_by(id: params[:off_id]) || Off.new
+      unless params[:off_id].present?
+        redirect_to offs_path,
+          alert: "お休みはまだ登録されていません。お子さんとお休み日を入力してください。"
+        return
+      end
+
+      @off = find_customer_off!(params[:off_id])
     end
 
     def create
+
+    # お休み日の未入力チェック
+    submitted = params[:off].is_a?(ActionController::Parameters) ?
+      params[:off] : ActionController::Parameters.new
+
+    messages = []
+
+    if submitted[:child_id].blank?
+      messages << "お子さんのお名前が未入力です。"
+    elsif @children.none? { |child| child.id.to_s == submitted[:child_id].to_s }
+      messages << "選択されたお子さんを確認できません。"
+    end
+
+    if submitted[:off_month].blank?
+      messages << "お休み日が未入力です。"
+    end
+
+    if messages.any?
+      @off = Off.new
+      flash.now[:alert] = messages.join(" ")
+      render :index, status: :unprocessable_entity
+      return
+    end
+
       # 休会中チェック
       if current_customer.status == "suspended"
         flash[:alert] = "休会中はお休みを取ることができません。"
@@ -13,10 +45,38 @@ class Public::OffsController < ApplicationController
       # ✅ カレンダー形式（date_field）から受け取った文字列を Date 型に変換
     begin
       off_date = Date.parse(params[:off][:off_month])
+
+      # B_CONTRACT_WEEKDAY_FILTER_20261118
+      selected_child = @children.find do |child|
+        child.id.to_s == params.dig(:off, :child_id).to_s
+      end
+
+      if selected_child
+        allowed_days = [
+          selected_child.contact_dey1,
+          selected_child.contact_dey2
+        ].compact.map(&:strip).uniq
+
+        weekday = %w[
+          日曜日 月曜日 火曜日 水曜日
+          木曜日 金曜日 土曜日
+        ][off_date.wday]
+
+        unless allowed_days.include?(weekday) || ScheduleOverrides.off_for?(off_date, selected_child) # ADMIN_ADDITIONAL_DAYS_20261118
+          @off = Off.new(off_params)
+          @off.child_id = selected_child.id
+
+          flash.now[:alert] =
+            "契約曜日（#{allowed_days.join('・')}）の日付を選択してください。"
+
+          render :index, status: :unprocessable_entity
+          return
+        end
+      end
       limit_day = Setting.find_by(key: 'available_off_day')&.value
      if limit_day.present? && off_date > Date.parse(limit_day)
       flash[:alert] = "まだスケジュールが未定です。"
-      redirect_to new_off_path and return
+      redirect_to offs_path and return
      end
 
      # ★ 追加：不可能日チェック（disabled_off_days）
@@ -35,9 +95,9 @@ class Public::OffsController < ApplicationController
 
 
 
-    rescue ArgumentError
+    rescue ArgumentError, TypeError
       flash[:alert] = "無効なお休み日付が選択されました。"
-      redirect_to new_off_path and return
+      redirect_to offs_path and return
     end
     
 
@@ -54,9 +114,8 @@ class Public::OffsController < ApplicationController
     
       # 子供データを検索
       child = current_customer.children.find_by(
-        first_name: params[:off][:child_first_name],
-        last_name: params[:off][:child_last_name]
-      )
+       id: params.dig(:off, :child_id)
+     )
     
       if child
         # 子供データが見つかった場合、必要な情報を設定
@@ -71,7 +130,7 @@ class Public::OffsController < ApplicationController
         @off.first_name = child.first_name # NOT NULL制約を満たすため
     
         # Off データの保存処理
-        if @off.save
+        if @off.save(context: :public)
           flash[:notice] = 'お休みが登録されました。'
           redirect_to new_off_path(off_id: @off.id)
         else
@@ -79,8 +138,10 @@ class Public::OffsController < ApplicationController
           render :index
         end
       else
-        flash.now[:alert] = "該当するお子さんが見つかりませんでした。"
-        render :index
+        flash.now[:alert] = @children.empty? ?
+         "会員登録をお願いします" :
+         "お子様を選択してください。"
+       render :index, status: :unprocessable_entity
       end
     end
 
@@ -89,37 +150,68 @@ class Public::OffsController < ApplicationController
     end
 
     def show
-      @off = Off.find(params[:id])
+      @off = find_customer_off!(params[:id])
       redirect_to show_absences_off_path(id: @off.child_id)
     end
 
-    def show_absences
-      @child = Child.find(params[:id])
+  def show_absences
+    @child = current_customer.children.find(params[:id])
 
-      # お子さんに関連するすべてのお休みデータを取得
-      @offs = Off.where(child_id: @child.id).order(created_at: :desc)
-
-      # 期限切れのデータをチェックして処理
-      @offs.each do |off|
-        off.check_and_update_expiration if off.expired?
+    # 既存の期限切れ判定を維持
+    @child.offs.where(flag: 0)
+      .where("off_month < ?", 3.months.ago.to_date)
+      .find_each do |off|
+        off.check_and_update_expiration
       end
 
-      # 更新後のデータを再取得
-      @offs = Off.where(child_id: @child.id).order(created_at: :desc)
-    end
+    # お休み日の新しい順、1ページ10件
+    @offs = @child.offs
+      .where.not(off_month: nil)
+      .order(off_month: :desc, id: :desc)
+      .page(params[:page])
+      .per(10)
+  end
 
     def edit_absence
-      @off = Off.find(params[:id])
+      @off = find_customer_off!(params[:id])
+    if @off.flag != 0 || @off.transfer_registered? || @off.expired?
+      redirect_to show_absences_off_path(id: @off.child_id),
+        alert: "振替済み・期限切れのお休みは変更や削除ができません。"
+      return
+    end
       @off_date = @off.off_month # すでにdate型なので直接取得
     end
 
     def update_absence
-      @off = Off.find(params[:id])
+      @off = find_customer_off!(params[:id])
+    if @off.flag != 0 || @off.transfer_registered? || @off.expired?
+      redirect_to show_absences_off_path(id: @off.child_id),
+        alert: "振替済み・期限切れのお休みは変更や削除ができません。"
+      return
+    end
     
       begin
         # ユーザーが入力した日付をdate型として取得
         selected_date = Date.parse(params[:off][:off_month])
-      rescue ArgumentError
+
+        weekday = %w[
+          日曜日 月曜日 火曜日 水曜日
+          木曜日 金曜日 土曜日
+        ][selected_date.wday]
+
+        allowed_days = [
+          @off.child.contact_dey1,
+          @off.child.contact_dey2
+        ].compact.map(&:strip).uniq
+
+        unless allowed_days.include?(weekday) || ScheduleOverrides.off_for?(selected_date, @off.child)
+          flash.now[:alert] =
+            "契約曜日（#{allowed_days.join('・')}）の日付を選択してください。"
+
+          render :edit_absence, status: :unprocessable_entity
+          return
+        end
+      rescue ArgumentError, TypeError
         flash[:alert] = "無効な日付が選択されました。"
         render :edit_absence and return
       end
@@ -137,25 +229,44 @@ class Public::OffsController < ApplicationController
       end
     
       # `off_month`を更新
-      if @off.update(off_month: selected_date)
+      @off.assign_attributes(off_month: selected_date)
+      if @off.save(context: :public)
         flash[:notice] = "お休み情報を更新しました。"
         redirect_to show_absences_off_path(id: @off.child_id)
       else
-        flash[:alert] = "お休み情報の更新に失敗しました。"
+        flash.now[:alert] = @off.errors.full_messages.join("、")
         render :edit_absence
       end
     end
 
     def destroy
-      @off = Off.find(params[:id])
+      @off = find_customer_off!(params[:id])
+    if @off.flag != 0 || @off.transfer_registered? || @off.expired?
+      redirect_to show_absences_off_path(id: @off.child_id),
+        alert: "振替済み・期限切れのお休みは変更や削除ができません。"
+      return
+    end
       @off.destroy
       redirect_to show_absences_off_path(id: @off.child_id), notice: 'お休みがキャンセルされました'
     end
 
     private
 
+  def find_customer_off!(id)
+    Off.joins(:child)
+      .where(children: { customer_id: current_customer.id })
+      .find(id)
+  end
+
+
+  def load_registered_children
+    @children = current_customer ?
+      current_customer.children.order(:id).to_a : []
+  end
+
+
     def off_params
-      params.require(:off).permit(:off_day, :off_month, :child_id, :contact_dey1, :contact_dey2, :level,  :contact_time1, :contact_time2,)
+      params.require(:off).permit(:off_month)
     end
 
     def off_date_disabled_by_slots?(date)

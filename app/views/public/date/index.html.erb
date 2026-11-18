@@ -3,13 +3,13 @@
 <% disabled_transfer_slots = Setting.find_by(key: 'disabled_transfer_slots')&.value.to_s %>
 
 <div class="calendar-photo-container">
-  <h2>9月10月スケジュール表</h2>
-  <%= image_tag 'sep_oct_2026_schedule_742.png', class: 'calendar-photo', alt: '9月10月スケジュール表' %>
+  <h2>11月12月スケジュール表</h2>
+  <%= image_tag 'junior_swimming_nov_dec_2026_742x1024.png', class: 'calendar-photo', alt: '11月12月スケジュール表' %>
 </div>
 
 <div class="calendar-photo-container">
-  <h2>11月12月スケジュール表</h2>
-  <%= image_tag 'junior_swimming_nov_dec_2026_742x1024.png', class: 'calendar-photo', alt: '11月12月スケジュール表' %>
+  <h2>1月2月スケジュール表</h2>
+  <%= image_tag 'junior_swimming_jan_feb_2026_742x1024.png', class: 'calendar-photo', alt: '1月2月スケジュール表' %>
 </div>
 
 <div class="container">
@@ -29,33 +29,41 @@
 
 </div>
 
-<% if flash[:alert] %>
-  <div class="alert alert-danger"><%= flash[:alert] %></div>
-<% end %>
-
-<% if @date&.errors&.any? %>
-  <div class="alert alert-danger">
-    <h4>入力エラーがあります:</h4>
-    <ul>
-      <% @date.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-    </ul>
-  </div>
-<% end %>
-
-<%= form_with model: @date, url: date_index_path, method: :post do |f| %>
+<%= form_with model: @date, url: date_index_path, method: :post, data: { turbo: false } do |f| %>
   <h3>振替日入力</h3>
+  <%# ADMIN_ADDITIONAL_DAYS_20261118 %>
+  <%= hidden_field_tag :additional_transfer_dates_data,
+        ScheduleOverrides.transfer_dates.to_json, id: "additional_transfer_dates_data" %>
 
-  <div class="field">
-    <%= f.label :last_name, "姓", for: "last_name" %><br />
-    <%= f.text_field :last_name, id: "last_name" %>
-  </div>
+  <% if flash[:alert] %>
+    <div class="alert alert-danger"><%= flash[:alert] %></div>
+  <% end %>
 
-  <div class="field">
-    <%= f.label :first_name, "名", for: "first_name" %><br />
-    <%= f.text_field :first_name, id: "first_name" %>
-  </div>
+  <% if @date&.errors&.any? %>
+    <div class="alert alert-danger">
+      <h4>入力エラーがあります:</h4>
+      <ul>
+        <% @date.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+
+  <% if @children.empty? %>
+    <div class="alert alert-danger">
+      会員登録をお願いします
+    </div>
+  <% else %>
+    <div class="field">
+      <%= f.label :child_id, "お子様の名前" %><br />
+      <%= f.select :child_id,
+        @children.map { |child| [child.full_name, child.id] },
+        { include_blank: "お子様を選択してください" },
+        { id: "child_id" } %>
+    </div>
+  <% end %>
 
   <div class="field">
     <%= f.label :off_id, "お休み日を選択", for: "off_id" %><br />
@@ -91,20 +99,17 @@
     ], { include_blank: "クラス選択" }, { id: "level" } %>
   </div>
 
-  <div class="field">
-    <%= f.label :contact_dey, "振替曜日", for: "contact_dey" %><br />
-    <%= f.select :contact_dey, [["土曜日","土曜日"],["日曜日","日曜日"],["祝日","祝日"]], { include_blank: "曜日選択" }, { id: "contact_dey" } %>
-  </div>
+  <%= f.hidden_field :contact_dey, id: "contact_dey" %>
+  <%= hidden_field_tag :holiday_dates_data,
+      TransferCalendar::HOLIDAY_DATES.to_json,
+      id: "holiday_dates_data" %>
+  <p id="transfer_day_message"></p>
 
   <div class="field">
     <%= f.label :transfer_time, "振替時間", for: "transfer_time" %><br />
     <%= f.select :transfer_time, [], { include_blank: "時間選択" }, { id: "transfer_time" } %>
   </div>
 
-  <div class="field">
-    <%= f.label :telephone_number, "電話番号（ハイフンなし）", for: "telephone_number" %><br />
-    <%= f.text_field :telephone_number, id: "telephone_number", autofocus: true, autocomplete: "telephone_number" %>
-  </div>
 
   <div class="row">
     <div class="actions"><br>

@@ -1,113 +1,149 @@
-<div class="container">
+<%# G_ADMIN_OFF_MANAGEMENT_20261119 %>
+<style>
+  .admin-customer-details { max-width: 1100px; margin: 20px auto 36px; padding: 0 14px; }
+  .admin-customer-details *, .admin-customer-details *::before, .admin-customer-details *::after { box-sizing: border-box; }
+  .admin-customer-details .admin-detail-panel {
+    background: rgba(255,255,255,.95); border-radius: 12px;
+    padding: 18px; margin: 0 0 16px; color: #212529;
+  }
+  .admin-customer-details h2 { margin: 0 0 15px; }
+  .admin-customer-details h3 { margin: 0 0 14px; font-size: 1.3rem; }
+  .admin-customer-details h4 { margin: 12px 0; font-size: 1.1rem; }
+  .admin-customer-details .admin-info-grid {
+    display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px 20px;
+  }
+  .admin-customer-details .admin-detail-field { min-width: 0; overflow-wrap: anywhere; }
+  .admin-customer-details .admin-detail-field strong { display: block; font-size: .88rem; color: #555; margin-bottom: 2px; }
+  .admin-customer-details .admin-operation-grid { display: flex; flex-wrap: wrap; align-items: start; gap: 18px; }
+  .admin-customer-details .admin-operation-grid > div { flex: 1 1 220px; }
+  /* 共通CSSの form { min-height: calc(100vh - 50px) } をこの画面だけ解除 */
+  .admin-customer-details form {
+    min-height: 0 !important; height: auto !important; max-height: none !important;
+    margin: 0 !important; padding: 0 !important; width: auto !important;
+    display: block !important; position: static !important;
+  }
+  .admin-customer-details .form-group { margin-bottom: 8px; }
+  .admin-customer-details .admin-action-links { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; }
+  .admin-customer-details .admin-child-off-rows { max-height: 420px; overflow-y: auto; border-top: 1px solid #ddd; }
+  .admin-customer-details .admin-child-off-row {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+    border-bottom: 1px solid #e7e7e7; padding: 9px 0;
+  }
+  .admin-customer-details .admin-child-off-row time { min-width: 150px; font-variant-numeric: tabular-nums; }
+  .admin-customer-details .admin-child-off-row .admin-off-status { font-size: .85rem; }
+  .admin-customer-details .admin-child-off-row form { display: inline-block !important; }
+  .admin-customer-details .admin-action-bottom { display: flex; flex-wrap: wrap; gap: 10px; }
+  @media(max-width: 600px) {
+    .admin-customer-details .admin-info-grid { grid-template-columns: minmax(0,1fr); gap: 10px; }
+    .admin-customer-details .admin-detail-panel { padding: 14px; }
+    .admin-customer-details .admin-child-off-row time { min-width: 120px; }
+  }
+</style>
+
+<div class="admin-customer-details">
   <h2>会員詳細</h2>
 
-  <!-- 会員情報 -->
-  <div class="customer-info row">
-    <div class="col-md-3">
-      <strong>会員ID:</strong> <%= @customer.id %>
-    </div>
-    <div class="col-md-3">
-      <strong>氏名:</strong> <%= @customer.last_name %> <%= @customer.first_name %>
-    </div>
-    <div class="col-md-3">
-      <strong>カナ:</strong> <%= @customer.last_name_kana %> <%= @customer.first_name_kana %>   
-    </div>
-    <div class="col-md-3">
-      <strong>郵便番号:</strong> <%= @customer.postal_code %>
-    </div>
-    <div class="col-md-3">
-      <strong>住所:</strong> <%= @customer.address %>
-    </div>
-    <div class="col-md-3">
-      <strong>電話番号:</strong> <%= @customer.telephone_number %>
-    </div>
-    <div class="col-md-3">
-      <strong>メールアドレス:</strong> <%= @customer.email %>
-    </div>
-    <div class="col-md-3">
-      <strong>ステータス:</strong>
-      <span class="badge <%= @customer.active? ? 'bg-success' : @customer.suspended? ? 'bg-warning' : 'bg-danger' %>">
-        <%= Customer.statuses_i18n[@customer.status] %>
-      </span>
-    </div>
-    <div class="col-md-12 mt-3">
-      <h3>ステータス変更・削除</h3>
-      <div class="row">
-        <div class="col-md-6">
-          <%= form_with url: change_status_admin_area_customer_path(@customer), method: :patch, local: true do |f| %>
-            <div class="form-group">
-              <%= f.label :status, "ステータスを選択" %>
-              <%= f.select :status, [['有効', 'active'], ['休会中', 'suspended']], {}, class: "form-control" %>
-            </div>
-            <div class="form-group mt-2">
-              <%= f.submit "変更", class: "btn btn-primary" %>
-            </div>
-          <% end %>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <%= label_tag :delete, "会員を完全削除" %>
-            <%= button_to "削除", admin_area_customer_path(@customer),
-                method: :delete,
-                class: "btn btn-danger",
-                data: { confirm: "本当に削除しますか？この操作は取り消せません。会員とお子さんの全ての情報が削除されます。" } %>
-          </div>
-        </div>
+  <div class="admin-detail-panel">
+    <h3>会員情報</h3>
+    <div class="admin-info-grid">
+      <div class="admin-detail-field"><strong>会員ID</strong><%= @customer.id %></div>
+      <div class="admin-detail-field"><strong>氏名</strong><%= @customer.last_name %> <%= @customer.first_name %></div>
+      <div class="admin-detail-field"><strong>カナ</strong><%= @customer.last_name_kana %> <%= @customer.first_name_kana %></div>
+      <div class="admin-detail-field"><strong>郵便番号</strong><%= @customer.postal_code %></div>
+      <div class="admin-detail-field"><strong>住所</strong><%= @customer.address %></div>
+      <div class="admin-detail-field"><strong>電話番号</strong><%= @customer.telephone_number %></div>
+      <div class="admin-detail-field"><strong>メールアドレス</strong><%= @customer.email %></div>
+      <div class="admin-detail-field">
+        <strong>ステータス</strong>
+        <span class="badge <%= @customer.active? ? 'bg-success' : @customer.suspended? ? 'bg-warning' : 'bg-danger' %>">
+          <%= Customer.statuses_i18n[@customer.status] %>
+        </span>
       </div>
     </div>
-    <div class="col-md-3">
-      <strong>パスワードリセット:</strong><br>
-      <%= button_to "パスワードをリセットする", password_reset_admin_area_customer_path(@customer),
-          method: :post,
-          class: "btn btn-warning btn-sm",
-          data: { confirm: "本当にパスワードをリセットしますか？" } %>
+    <div class="admin-action-links">
+      <%= link_to "会員情報を編集する", edit_admin_area_customer_path(@customer), class: "btn btn-primary btn-sm" %>
     </div>
   </div>
 
-  <!-- お子さん情報 -->
-  <% @customer.children.each do |child| %>
-    <h2 class="mt-5">お子さん情報</h2>
-    <%= link_to edit_admin_area_child_path(child), class: "btn btn-warning" do %>
-      お子さん情報を編集
-    <% end %>
+  <div class="admin-detail-panel">
+    <h3>管理操作</h3>
+    <div class="admin-operation-grid">
+      <div>
+        <strong>ステータス変更</strong>
+        <%= form_with url: change_status_admin_area_customer_path(@customer), method: :patch, local: true, data: { turbo: false } do |f| %>
+          <div class="form-group">
+            <%= f.label :status, "ステータスを選択" %>
+            <%= f.select :status, [['有効', 'active'], ['休会中', 'suspended']], { selected: @customer.status }, class: "form-control" %>
+          </div>
+          <%= f.submit "変更", class: "btn btn-primary btn-sm" %>
+        <% end %>
+      </div>
+      <div>
+        <strong>パスワードリセット</strong>
+        <%= button_to "パスワードをリセットする", password_reset_admin_area_customer_path(@customer),
+          method: :post, class: "btn btn-warning btn-sm",
+          data: { turbo_confirm: "本当にパスワードをリセットしますか？", confirm: "本当にパスワードをリセットしますか？" } %>
+      </div>
+      <div>
+        <strong>会員を完全削除</strong>
+        <%= button_to "会員を削除", admin_area_customer_path(@customer),
+          method: :delete, class: "btn btn-danger btn-sm",
+          data: { turbo_confirm: "会員とお子さんの全情報が削除されます。本当に削除しますか？", confirm: "会員とお子さんの全情報が削除されます。本当に削除しますか？" } %>
+      </div>
+    </div>
+  </div>
 
-    <div class="child-info row">
-      <div class="col-md-3">
-        <strong>氏名:</strong> <%= child.last_name %> <%= child.first_name %>
+  <% @customer.children.includes(offs: :transfers).each do |child| %>
+    <div class="admin-detail-panel" id="admin-child-<%= child.id %>">
+      <h3>お子さん情報：<%= child.last_name %> <%= child.first_name %></h3>
+      <div class="admin-info-grid">
+        <div class="admin-detail-field"><strong>氏名</strong><%= child.last_name %> <%= child.first_name %></div>
+        <div class="admin-detail-field"><strong>カナ</strong><%= child.last_name_kana %> <%= child.first_name_kana %></div>
+        <div class="admin-detail-field"><strong>クラス</strong><%= child.level %></div>
+        <div class="admin-detail-field"><strong>契約曜日</strong><%= [child.contact_dey1, child.contact_dey2].compact.join("・") %></div>
+        <div class="admin-detail-field"><strong>契約時間</strong><%= [child.contact_time1, child.contact_time2].compact.join("・") %></div>
+        <div class="admin-detail-field"><strong>未振替のお休み</strong><%= child.offs.count { |off| off.flag == 0 && !off.expired? && off.transfers.empty? } %>日</div>
       </div>
-      <div class="col-md-3">
-        <strong>カナ:</strong> <%= child.last_name_kana %> <%= child.first_name_kana %>
-      </div>
-      <div class="col-md-3">
-        <strong>クラス:</strong> <%= child.level %>
-      </div>
-      <div class="col-md-3">
-        <strong>契約曜日:</strong> <%= [child.contact_dey1, child.contact_dey2].compact.join("・") %>
-      </div>
-      <div class="col-md-3">
-        <strong>契約時間:</strong> <%= [child.contact_time1, child.contact_time2].compact.join("・") %>
-      </div>
-      <div class="col-md-3">
-        <strong>お休み:</strong> <%= Off.where(child_id: child.id, flag: 0).count %>日
-      </div>
-        <!-- 追加登録 -->
-      <div class="col-md-3">
+      <div class="admin-action-links">
+        <%= link_to "お子さん情報を編集", edit_admin_area_child_path(child), class: "btn btn-warning btn-sm" %>
         <%= link_to "お休み登録", new_admin_area_off_path(child_id: child.id), class: "btn btn-outline-danger btn-sm" %>
-      </div>
-      <div class="col-md-3">
         <%= link_to "振替登録", new_admin_area_transfer_path(child_id: child.id), class: "btn btn-outline-success btn-sm" %>
       </div>
+
+      <h4>お休み日一覧（<%= child.offs.count { |off| off.off_month.present? } %>件）</h4>
+      <% offs = child.offs.select { |off| off.off_month.present? }.sort_by { |off| [off.off_month, off.id] }.reverse %>
+      <% if offs.empty? %>
+        <p>お休みの登録はありません。</p>
+      <% else %>
+        <div class="admin-child-off-rows">
+          <% offs.each do |off| %>
+            <div class="admin-child-off-row">
+              <time datetime="<%= off.off_month.iso8601 %>"><%= off.off_month.strftime("%Y年%m月%d日") %></time>
+              <% if off.flag == 2 || off.expired? %>
+                <span class="admin-off-status text-danger">期限切れ・変更不可</span>
+              <% elsif off.transfers.any? %>
+                <span class="admin-off-status text-success">振替済み（<%= off.transfers.first.transfer_date.strftime("%Y年%m月%d日") if off.transfers.first.transfer_date.present? %>）</span>
+              <% elsif off.flag != 0 %>
+                <span class="admin-off-status text-secondary">変更不可</span>
+              <% else %>
+                <%= link_to "変更する", edit_admin_area_off_path(off), class: "btn btn-sm btn-warning" %>
+                <%= button_to "削除", admin_area_off_path(off), method: :delete,
+                  data: { turbo_confirm: "#{off.off_month.strftime('%Y年%m月%d日')}のお休みを削除しますか？", confirm: "本当に削除しますか？" },
+                  class: "btn btn-sm btn-danger" %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
     </div>
   <% end %>
 
-  <!-- リンク -->
-  <div class="actions admin mt-4 gap-3">
-    <%= link_to history_admin_area_customer_path(@customer), class: "btn btn-info" do %>        
-      お休みと振替日<br>履歴一覧を見る
-    <% end %>
+  <% if @customer.children.empty? %>
+    <div class="admin-detail-panel">お子さんが登録されていません。</div>
+  <% end %>
 
-    <%= link_to edit_admin_area_customer_path, class: "btn btn-primary" do %>
-      会員情報を編集する
-    <% end %>
+  <div class="admin-action-bottom">
+    <%= link_to "お休み・振替履歴一覧", history_admin_area_customer_path(@customer), class: "btn btn-info" %>
+    <%= link_to "会員一覧に戻る", admin_area_customers_path, class: "btn btn-secondary" %>
   </div>
 </div>
