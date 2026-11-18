@@ -1,5 +1,8 @@
 class UpdateLessonTimeSlots < ActiveRecord::Migration[7.1]
   def up
+    # 過去の履歴を保護し、日本時間の本日以降だけを更新
+    cutoff_date = Time.find_zone!("Asia/Tokyo").today
+
     execute <<~SQL
       UPDATE children
       SET
@@ -52,6 +55,7 @@ class UpdateLessonTimeSlots < ActiveRecord::Migration[7.1]
           WHEN contact_dey2 = '土曜日' AND contact_time2 = '18:00' THEN '18:30'
           ELSE contact_time2
         END
+      WHERE off_month >= '#{cutoff_date}'
     SQL
 
     execute <<~SQL
@@ -66,6 +70,7 @@ class UpdateLessonTimeSlots < ActiveRecord::Migration[7.1]
         WHEN contact_dey = '土曜日' AND transfer_time = '18:00' THEN '18:30'
         ELSE transfer_time
       END
+      WHERE transfer_date >= '#{cutoff_date}'
     SQL
   end
 
