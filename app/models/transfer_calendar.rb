@@ -48,6 +48,7 @@ class TransferCalendar
     name = value.to_s.strip
     return "カニ" if %w[カニ 2歳カニ 3歳カニ].include?(name)
     return "ピンク星4" if name == "ピンク星"
+    return "AS" if name == "AS"
 
     LEVEL_ORDER.include?(name) ? name : nil
   end
@@ -55,6 +56,15 @@ class TransferCalendar
   def self.allowed_times_for(day, level, date: nil)
     name = canonical_level(level)
     return [] unless name
+
+    # SWIMMING_AS_CLASS_20261119
+    # ASクラスは土曜日18:30、日曜日14:00だけ
+    if name == "AS"
+      return ["18:30"] if day == "土曜日"
+      return ["14:00"] if day == "日曜日"
+      return []
+    end
+
 
     rank = LEVEL_ORDER.index(name)
     case day

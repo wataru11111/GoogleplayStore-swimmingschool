@@ -117,3 +117,134 @@
     </div>
   </div>
 <% end %>
+
+
+<!-- SWIMMING_OFFS_BY_CHILD_20261119 -->
+<%= tag.script(
+  raw(json_escape(
+    @offs.map { |child_id, off|
+      [off.id.to_s, child_id.to_s]
+    }.to_h.to_json
+  )),
+  type: "application/json",
+  id: "swimming_off_child_map"
+) %>
+
+<script>
+(function () {
+  function setupOffsByChild() {
+    const childSelect = document.querySelector(
+      'select[name="transfer[child_id]"]'
+    );
+
+    const offSelect = document.querySelector(
+      'select[name="transfer[off_id]"]'
+    );
+
+    const dataElement = document.getElementById(
+      "swimming_off_child_map"
+    );
+
+    if (!childSelect || !offSelect || !dataElement) {
+      console.warn("お休み日の絞り込み対象が見つかりません");
+      return;
+    }
+
+    if (offSelect.dataset.childFilterReady === "1") {
+      return;
+    }
+
+    let owners;
+
+    try {
+      owners = JSON.parse(dataElement.textContent);
+    } catch (error) {
+      console.error("お休み日データの読み込み失敗", error);
+      return;
+    }
+
+    // 既存の選択肢を保存する
+    const allOptions = Array.from(offSelect.options)
+      .filter(option => option.value !== "")
+      .map(option => option.cloneNode(true));
+
+    const initialValue = offSelect.value;
+
+    offSelect.dataset.childFilterReady = "1";
+
+    function updateOffOptions(keepValue = "") {
+      const selectedChildId = childSelect.value;
+
+      // 選択肢を一度リセット
+      offSelect.replaceChildren();
+
+      const placeholder = new Option(
+        "選択してください",
+        ""
+      );
+
+      offSelect.add(placeholder);
+
+      let count = 0;
+
+      // 選択されたお子さんのお休み日だけを追加
+      allOptions.forEach(option => {
+        const ownerId = owners[String(option.value)];
+
+        if (
+          selectedChildId &&
+          String(ownerId) === String(selectedChildId)
+        ) {
+          offSelect.add(option.cloneNode(true));
+          count++;
+        }
+      });
+
+      if (!selectedChildId) {
+        placeholder.textContent = "お子さんを選択してください";
+      } else if (count === 0) {
+        placeholder.textContent = "登録済みのお休みがありません";
+      }
+
+      // 入力エラー後の再表示では正しい選択を維持
+      if (
+        keepValue &&
+        Array.from(offSelect.options).some(
+          option => option.value === keepValue
+        )
+      ) {
+        offSelect.value = keepValue;
+      } else {
+        offSelect.value = "";
+      }
+
+      offSelect.disabled = !selectedChildId || count === 0;
+    }
+
+    // 最初の表示
+    updateOffOptions(initialValue);
+
+    // お子さんを変更したらお休み日を再選択
+    childSelect.addEventListener("change", function () {
+      updateOffOptions();
+      offSelect.dispatchEvent(
+        new Event("change", { bubbles: true })
+      );
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener(
+      "DOMContentLoaded",
+      setupOffsByChild
+    );
+  } else {
+    setupOffsByChild();
+  }
+
+  document.addEventListener(
+    "turbo:load",
+    setupOffsByChild
+  );
+})();
+</script>
