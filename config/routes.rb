@@ -32,7 +32,7 @@ Rails.application.routes.draw do
     end
     resources :offs, only: [:index, :new, :create, :edit, :update, :destroy] # G_ADMIN_OFF_MANAGEMENT_20261119 # お休み一覧ページのルート
     resources :transfers, only: [:new, :create]
-    resources :child, only: [:edit, :update] # 管理者用の子供編集ページ
+    resources :child, only: [:edit, :update, :destroy] # 管理者用の子供編集ページ
     resources :settings, only: [:index, :update] do
       collection do
         post :add_slot
@@ -67,7 +67,7 @@ Rails.application.routes.draw do
 
     get '/calender/index' => "calendar#index"
 
-    resources :child, only: [:new, :edit, :update, :create, :destroy]
+    resources :child, only: [:new, :edit, :update, :create]
 
     # マイページのルートに名前付きルートを追加
     get '/customers/show' => "customers#show", as: 'customers_show'

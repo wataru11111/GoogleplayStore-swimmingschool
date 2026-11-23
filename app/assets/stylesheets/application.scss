@@ -116,3 +116,16 @@ h4[id^="section-"], td[id^="section-"] {
 /* 会員一覧の検索バーcss */
 @import "admin/customers";
 
+
+
+/* CHILD_EDIT_LAYOUT_FIX_20261123 */
+#child-edit-page form {
+  min-height: 0 !important;
+  height: auto !important;
+  margin-bottom: 0 !important;
+}
+
+#child-edit-page .child-edit-navigation {
+  margin-top: 12px;
+  margin-bottom: 24px;
+}
