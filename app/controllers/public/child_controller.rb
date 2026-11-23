@@ -29,6 +29,15 @@ class Public::ChildController < ApplicationController
     end
   end
 
+  def destroy
+    @child = current_customer.children.find(params[:id])
+    if @child.destroy
+      flash[:notice] = "お子さん情報を削除しました。"
+    else
+      flash[:alert] = "お子さん情報を削除できませんでした。"
+    end
+    redirect_to customers_show_path
+  end
 
   private
 

@@ -33,37 +33,6 @@
   .admin-customer-details .admin-child-off-row .admin-off-status { font-size: .85rem; }
   .admin-customer-details .admin-child-off-row form { display: inline-block !important; }
   .admin-customer-details .admin-action-bottom { display: flex; flex-wrap: wrap; gap: 10px; }
-  /* ADMIN_CHILD_DELETE_STYLE_20261123 */
-  .admin-child-delete-area {
-    border-top: 1px solid #ddd;
-    margin-top: 18px;
-    padding-top: 14px;
-    display: flex;
-    justify-content: flex-end;
-  }
-  .admin-child-delete-dialog {
-    width: min(92vw, 480px);
-    max-width: 480px;
-    border: none;
-    border-radius: 12px;
-    padding: 24px;
-    color: #212529;
-    background: #fff;
-    box-shadow: 0 12px 36px rgba(0,0,0,.25);
-  }
-  .admin-child-delete-dialog::backdrop {
-    background: rgba(0,0,0,.55);
-  }
-  .admin-child-delete-warning {
-    color: #c62828;
-    font-weight: bold;
-  }
-  .admin-child-delete-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 20px;
-  }
   @media(max-width: 600px) {
     .admin-customer-details .admin-info-grid { grid-template-columns: minmax(0,1fr); gap: 10px; }
     .admin-customer-details .admin-detail-panel { padding: 14px; }
@@ -166,56 +135,6 @@
           <% end %>
         </div>
       <% end %>
-      <!-- ADMIN_CHILD_DELETE_20261123 -->
-      <div class="admin-child-delete-area"
-           data-controller="admin-child-delete">
-
-        <button type="button"
-                class="btn btn-outline-danger btn-sm"
-                data-action="click->admin-child-delete#open">
-          お子さん情報を削除
-        </button>
-
-        <dialog class="admin-child-delete-dialog"
-                data-admin-child-delete-target="dialog">
-
-          <h3>お子さん情報を削除しますか？</h3>
-
-          <p>
-            <strong><%= child.last_name %> <%= child.first_name %></strong>
-            さん（お子さんID：<%= child.id %>）の情報を削除します。
-          </p>
-
-          <p>
-            このお子さんの会員情報・お休み・振替履歴が
-            すべて削除されます。
-          </p>
-
-          <p class="admin-child-delete-warning">
-            ※削除後、アプリからは復旧できません。
-          </p>
-
-          <%= form_with url: admin_area_child_path(child),
-                        method: :delete,
-                        local: true,
-                        data: { turbo: false } do %>
-
-            <%= hidden_field_tag :confirm_child_id, child.id %>
-
-            <div class="admin-child-delete-buttons">
-              <button type="button"
-                      class="btn btn-secondary"
-                      data-action="click->admin-child-delete#close">
-                いいえ
-              </button>
-
-              <button type="submit" class="btn btn-danger">
-                はい
-              </button>
-            </div>
-          <% end %>
-        </dialog>
-      </div>
     </div>
   <% end %>
 
