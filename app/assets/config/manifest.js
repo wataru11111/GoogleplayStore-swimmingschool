@@ -7,6 +7,7 @@
 //= link preact--hooks.js
 //= link controllers/application.js
 //= link controllers/hello_controller.js
+//= link controllers/admin_child_delete_controller.js
 //= link controllers/index.js
 
 {
